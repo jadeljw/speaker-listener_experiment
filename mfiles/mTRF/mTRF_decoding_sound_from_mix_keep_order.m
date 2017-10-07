@@ -6,62 +6,58 @@
 
 %% band name
 lambda = 2^5;
-band_name = strcat(' 64Hz 2-8Hz sound from EEG lambda',num2str(lambda),' 10-65s');
+band_name = strcat(' 64Hz 2-8Hz mix Listner00 lambda',num2str(lambda),' 10-55s');
 
 %% load sound data from wav
-load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
-
-% retelling story 2 is original story 15
-AudioA_retell_cell{2} = AudioA_retell_cell{15};
-AudioB_retell_cell{2} = AudioB_retell_cell{15};
-
-% only has 14 stories for each type
-
-% write into cell
-AudioA_total = [AudioA_retell_cell(1:14) AudioA_read_cell(1:14)];
-AudioB_total = [AudioB_retell_cell(1:14) AudioB_read_cell(1:14)];
-AudioA_total = AudioA_total';
-AudioB_total = AudioB_total';
+% % load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
+% load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener01_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+%
+% % % retelling story 2 is original story 15
+% % AudioA_retell_cell{2} = AudioA_retell_cell{15};
+% % AudioB_retell_cell{2} = AudioB_retell_cell{15};
+% %
+% % % only has 14 stories for each type
+% %
+% % % write into cell
+% % AudioA_total = [AudioA_retell_cell(1:14) AudioA_read_cell(1:14)];
+% % AudioB_total = [AudioB_retell_cell(1:14) AudioB_read_cell(1:14)];
+% % AudioA_total = AudioA_total';
+% % AudioB_total = AudioB_total';
 
 %% load sound data from EEG
 % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-hilbert-sound_64Hz_lowpass8Hz_type.mat');
 % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\Audio_envelope_64Hz_hilbert_cell.mat');
-load('E:\DataProcessing\speaker-listener_experiment\AudioData\0-LZR-Listener-hilbert-sound_64Hz_lowpass8Hz_type_baseline.mat')
-% correct labels
-data_retell{13}=data_retell{11};
-data_retell{14}=data_retell{12};
-data_retell{11}=data_read{15};
-data_retell{12}=data_read{16};
+% load('E:\DataProcessing\speaker-listener_experiment\AudioData\0-LZR-Listener-hilbert-sound_64Hz_lowpass8Hz_type_baseline.mat')
+% load('E:\DataProcessing\speaker-listener_experiment\AudioData\from EEG\01-CYX-Listener-hilbert-sound_64Hz_lowpass8Hz.mat');
+load('E:\DataProcessing\speaker-listener_experiment\AudioData\from EEG\00-LZR-Listener-hilbert-sound_64Hz_lowpass8Hz.mat');
+audio_EEGBlock = data_filtered_8Hz.trial;
 
-% combine
-% EEGBlock = [data_retell data_read(1:14)];
-% EEGBlock = EEGBlock';
-audio_EEGBlock = [data_retell data_read(1:14)];
-audio_EEGBlock = audio_EEGBlock';
+
+%% load sound data from wav
+% % load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
+% load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener01_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener0_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
 
 %% data name
 p = pwd;
 
 %% load EEG data
-load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref_type.mat');
-
-% correct labels
-data_retell{13}=data_retell{11};
-data_retell{14}=data_retell{12};
-data_retell{11}=data_read{15};
-data_retell{12}=data_read{16};
+load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref-64Hz.mat');
+% load('E:\DataProcessing\speaker-listener_experiment\ListenerData\01-CYX-Listener-ICA-filter-reref-64Hz.mat')
+% 
 
 % combine
-EEGBlock = [data_retell data_read(1:14)];
+EEGBlock = data_filtered_theta.trial;
 EEGBlock = EEGBlock';
-
 
 %% attend stream
 % attend_stream = 1;
 % load('E:\DataProcessing\speaker-listener_experiment\Attend_Target.mat');
 % AttendTarget = [Retell_AttendTarget;Read_AttendTarget];
-load('CountBalanceTable_listener0_analysis.mat')
+% load('CountBalanceTable_listener0_analysis.mat')
+% load('CountBalanceTable_listener01.mat')
 
+load('CountBalanceTable.mat')
 %% timelag
 Fs = 64;
 % timelag = -250:500/32:500;
@@ -70,12 +66,12 @@ timelag = -250:(1000/Fs):500;
 % timelag = 0;
 
 %% length
-EEG_time = 15*Fs : 70*Fs;
+EEG_time = 15 * Fs : 60 * Fs;
 % clip_length = 5 * Fs;
 %
 % clipNum = round(EEG_time/clip_length);
 
-Audio_time = 10*Fs : 65*Fs;
+Audio_time = 10*Fs : 55*Fs;
 
 
 %% chn_sel
@@ -135,64 +131,31 @@ for j = 1 : length(timelag)
     for test_index = 1 : length(EEGBlock)
         
         % test data
-        % Audio
-        if  strcmpi('A',AttendTarget{test_index}) &&  strcmpi('left',Space{test_index})  % attend retell A and A is left
+        if strcmpi(Space(test_index),'left')
             Audio_attend_test = audio_EEGBlock{test_index}(1,EEG_time);
-            Audio_unattend_test = AudioB_total{test_index}(Audio_time);
+            Audio_unattend_test = data_right{test_index}(Audio_time)';
         else
-            if strcmpi('B',AttendTarget{test_index}) &&  strcmpi('left',Space{test_index}) % attend retell B and B is left
-                Audio_attend_test = audio_EEGBlock{test_index}(1,EEG_time);
-                Audio_unattend_test = AudioA_total{test_index}(Audio_time);
-            else
-                if strcmpi('A',AttendTarget{test_index}) &&  strcmpi('right',Space{test_index}) % attend read A and A is right
-                    Audio_attend_test = AudioA_total{test_index}(Audio_time);
-                    Audio_unattend_test = audio_EEGBlock{test_index}(1,EEG_time);
-                else  % attend read B and B is right
-                    Audio_attend_test = AudioB_total{test_index}(Audio_time);
-                    Audio_unattend_test = audio_EEGBlock{test_index}(1,EEG_time);
-                end
-            end
+            Audio_attend_test = data_left{test_index}(Audio_time)';
+            Audio_unattend_test = audio_EEGBlock{test_index}(1,EEG_time);
         end
         
         % EEG
         EEG_test =  EEGBlock{test_index}(chn_sel_index,EEG_time);
         
         disp(strcat('Training story',num2str(test_index),'...'));
+        
+        % traing process
         cnt_train_index = 1;
         for train_index = 1 : length(EEGBlock)
             if train_index ~= test_index
                 
-                %                 % train audio
-                %                 %                 if attend_stream == 1
-                %                 %                     Audio_attend_train = AudioEnv{train_index}(1,EEG_time);
-                %                 %                     Audio_unattend_train= AudioEnv{train_index}(2,EEG_time);
-                %                 %                 else
-                %                 %                     Audio_attend_train = AudioEnv{train_index}(2,EEG_time);
-                %                 %                     Audio_unattend_train = AudioEnv{train_index}(1,EEG_time);
-                %                 %                 end
-                %                 if  strcmpi('A',AttendTarget{train_index})
-                %                     Audio_attend_train = AudioA_total{train_index}(Audio_time);
-                %                     Audio_unattend_train = AudioB_total{train_index}(Audio_time);
-                %                 else
-                %                     Audio_attend_train = AudioB_total{train_index}(Audio_time);
-                %                     Audio_unattend_train = AudioA_total{train_index}(Audio_time);
-                %                 end
-                if  strcmpi('A',AttendTarget{train_index}) &&  strcmpi('left',Space{train_index})  % attend retell A and A is left
+                % train story
+                if strcmpi(Space(train_index),'left')
                     Audio_attend_train = audio_EEGBlock{train_index}(1,EEG_time);
-                    Audio_unattend_train = AudioB_total{train_index}(Audio_time);
+                    Audio_unattend_train= data_right{train_index}(Audio_time)';
                 else
-                    if strcmpi('B',AttendTarget{train_index}) &&  strcmpi('left',Space{train_index}) % attend retell B and B is left
-                        Audio_attend_train = audio_EEGBlock{train_index}(1,EEG_time);
-                        Audio_unattend_train = AudioA_total{train_index}(Audio_time);
-                    else
-                        if strcmpi('A',AttendTarget{train_index}) &&  strcmpi('right',Space{train_index}) % attend read A and A is right
-                            Audio_attend_train = AudioA_total{train_index}(Audio_time);
-                            Audio_unattend_train = audio_EEGBlock{train_index}(1,EEG_time);
-                        else  % attend read B and B is right
-                            Audio_attend_train = AudioB_total{train_index}(Audio_time);
-                            Audio_unattend_train = audio_EEGBlock{train_index}(1,EEG_time);
-                        end
-                    end
+                    Audio_attend_train = data_left{train_index}(Audio_time)';
+                    Audio_unattend_train = audio_EEGBlock{train_index}(1,EEG_time);
                 end
                 
                 % train EEG
@@ -254,13 +217,22 @@ for j = 1 : length(timelag)
             %                 Audio_attend_train = AudioEnv{train_index}(2,EEG_time);
             %                 Audio_unattend_train = AudioEnv{train_index}(1,EEG_time);
             %             end
-            if  strcmpi('A',AttendTarget{train_index})
-                Audio_attend_train = AudioA_total{train_index}(Audio_time);
-                Audio_unattend_train = AudioB_total{train_index}(Audio_time);
+            %             if  strcmpi('A',AttendTarget{train_index})
+            %                 Audio_attend_train = AudioA_total{train_index}(Audio_time);
+            %                 Audio_unattend_train = AudioB_total{train_index}(Audio_time);
+            %             else
+            %                 Audio_attend_train = AudioB_total{train_index}(Audio_time);
+            %                 Audio_unattend_train = AudioA_total{train_index}(Audio_time);
+            %             end
+            
+            if strcmpi(Space(train_index),'left')
+                Audio_attend_train = audio_EEGBlock{train_index}(1,EEG_time);
+                Audio_unattend_train= data_right{train_index}(Audio_time)';
             else
-                Audio_attend_train = AudioB_total{train_index}(Audio_time);
-                Audio_unattend_train = AudioA_total{train_index}(Audio_time);
+                Audio_attend_train = data_left{train_index}(Audio_time)';
+                Audio_unattend_train = audio_EEGBlock{train_index}(1,EEG_time);
             end
+            
             
             % train EEG
             EEG_train =  EEGBlock{train_index}(chn_sel_index,EEG_time);
