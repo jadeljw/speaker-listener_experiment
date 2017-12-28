@@ -26,13 +26,15 @@ Decoding_acc_unattend_ttest_result = zeros(1,length(timelag));
 
 lambda = 2^5;
 % bandName = strcat(' 64Hz 2-8Hz sound from EEG lambda',num2str(lambda),' 10-65s unattend only');
-bandName = strcat(' 64Hz 2-8Hz lambda',num2str(lambda),' 10-65s');
+% bandName = strcat(' 64Hz 2-8Hz lambda',num2str(lambda),' 10-55s');
+
+bandName = strcat(' 64Hz 2-8Hz sound from wav Listener120 lambda',num2str(lambda),' 10-55s');
 
 %%  mTRF plot
 % p = pwd;
-p = 'E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\listener11';
+p = 'E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\listener120';
 % category = 'mTRF';
-category = '64Hz 2-8Hz lambda32 10-65s';
+category = '64Hz 2-8Hz lambda32 10-55s';
 
 for  j = 1 : length(timelag)
     % load data

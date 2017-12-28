@@ -1,12 +1,13 @@
 cfg = [];%initial the configuration variable
-cfg.dataset = 'G:\Speaker-listener_experiment\listener\data\20170718-CYX\20170718-CYX-cocktail.cnt';%making a string
+cfg.dataset = 'G:\Speaker-listener_experiment\listener\data\20171118-YJMQ\20171118-YJMQ-cocktail.cnt';%making a string
 cfg.continuous = 'yes';%the data is a continuous stream
 % cfg.channel = 1:9;
 data = ft_preprocessing(cfg);
 
 %% read data from cnt files and define trials
 cfg=[];
-cfg.dataset = 'G:\Speaker-listener_experiment\listener\data\20170802-JSH\20170802-JSH.cnt';
+cfg.dataset = 'H:\Speaker-listener2017\data\20171221-LYB\20171221-LYB.cnt';
+% cfg.dataset = 'G:\Speaker-listener2017\data\20171125-LX\20171125-LX.cnt';
 cfg.channel= 1:64;
 cfg.trialdef.eventtype = 'trigger';
 cfg.trialdef.prestim = 5;
@@ -17,10 +18,10 @@ cfg.trialdef.eventvalue = [21 31];
 cfg = ft_definetrial(cfg);
 data_listener_total = ft_preprocessing(cfg);
 
-% choose valid data
-cfg = [];
-cfg.trials  = 1 : 20;
-data_listener_total = ft_preprocessing(cfg,data_listener_total);
+% % choose valid data
+% cfg = [];
+% cfg.trials  = 1 : 20;
+% data_listener_total = ft_preprocessing(cfg,data_listener_total);
 
 
 
@@ -45,19 +46,21 @@ cfg.method = 'runica';
 data_comp = ft_componentanalysis(cfg,data_listener_total_resample);
 
 %% view ICA result
+% load('E:\DataProcessing\easycapm1.mat');
 cfg = [];
-cfg.layout = 'easycapM1.lay'; % specify the layout file that should be used for plotting
+cfg.layout = 'E:\DataProcessing\easycapm1.mat'; % specify the layout file that should be used for plotting
 cfg.viewmode = 'component';
 ft_databrowser(cfg, data_comp);
 
 %% remove artificial
 cfg = [];
-cfg.component = [13 15 63]; % to be removed component(s)
+cfg.component = [16 49 61]; % to be removed component(s)
 data_listener_ica = ft_rejectcomponent(cfg, data_comp, data_listener_total_resample);
 
 %% view after remove artifacts result
 cfg = [];
-cfg.layout = 'easycapM1.lay'; % specify the layout file that should be used for plotting
+% cfg.layout = 'easycapM1.lay'; % specify the layout file that should be used for plotting
+cfg.layout = 'E:\DataProcessing\easycapm1.mat';
 cfg.viewmode = 'vertical';
 ft_databrowser(cfg, data_listener_ica);
 
@@ -68,8 +71,10 @@ load('G:\Speaker-listener_experiment\listener\data\20170705-LZR\0-LZR-Listener-i
 
 %% re-ref
 
-% listener01 的FPZ有问题
+% listener111 的FPZ有问题
 chn_sel_index = [1:32 34:42 44:59 61:63];
+% chn_sel_index = [1:32 34:42 44:48 50:59 61:63]; % without P2
+% chn_sel_index = [1 3:32 34:42 44:59 61:63]; % without FPZ
 cfg = [];
 cfg.reref = 'yes';
 cfg.refchannel = chn_sel_index;

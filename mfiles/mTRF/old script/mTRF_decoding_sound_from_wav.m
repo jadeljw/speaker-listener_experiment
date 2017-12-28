@@ -4,7 +4,7 @@
 % by:LJW
 
 %% data name
-dataName = '11-ZM-Listener-ICA-reref-filter_type';
+dataName = '101-YJMQ-Listener-ICA-reref-filter_type';
 
 %% band name
 lambda = 2^5;
@@ -13,12 +13,12 @@ band_name = strcat(' 64Hz 2-8Hz lambda',num2str(lambda),' 10-55s');
 %% load sound data from wav
 load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
 
-% retelling story 2 is original story 15 % listener0 and listener11 needs
-% this correctness
-AudioA_retell_cell{2} = AudioA_retell_cell{15};
-AudioB_retell_cell{2} = AudioB_retell_cell{15};
-
-% only has 14 stories for each type
+% % retelling story 2 is original story 15 % listener0 and listener11 needs
+% % this correctness
+% AudioA_retell_cell{2} = AudioA_retell_cell{15};
+% AudioB_retell_cell{2} = AudioB_retell_cell{15};
+% 
+% % only has 14 stories for each type
 
 % write into cell
 AudioA_total = [AudioA_read_cell(1:14) AudioA_retell_cell(1:14)];

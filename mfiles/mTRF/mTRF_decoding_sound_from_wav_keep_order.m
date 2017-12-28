@@ -3,41 +3,32 @@
 % purpose: mTRF validation
 % by:LJW
 
+% revised 11.19 for speaker-listener experiment
+% using mTRF 1.5 toolbox
+
+%% data name
+dataName = '120-LYB-Listener-ICA-reref-filter_64Hz';
+dataFile = '20171221-LYB';
 
 %% band name
 lambda = 2^5;
-band_name = strcat(' 64Hz 2-8Hz sound from wav Listner00 lambda',num2str(lambda),' 10-55s');
+band_name = strcat(' 64Hz 2-8Hz sound from wav Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
 
 %% load sound data from wav
 % % load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
 % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener01_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
-load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener0_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
-%
-% % % retelling story 2 is original story 15
-% % AudioA_retell_cell{2} = AudioA_retell_cell{15};
-% % AudioB_retell_cell{2} = AudioB_retell_cell{15};
-% %
-% % % only has 14 stories for each type
-% %
-% % % write into cell
-% % AudioA_total = [AudioA_retell_cell(1:14) AudioA_read_cell(1:14)];
-% % AudioB_total = [AudioB_retell_cell(1:14) AudioB_read_cell(1:14)];
-% % AudioA_total = AudioA_total';
-% % AudioB_total = AudioB_total';
+% load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener0_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+% load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener101_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+load(strcat('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener',dataName(1:3),'_Audio_envelope_hilbert_first_64Hz_keep_order.mat'));
 
-%% load sound data from EEG
-% % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-hilbert-sound_64Hz_lowpass8Hz_type.mat');
-% % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\Audio_envelope_64Hz_hilbert_cell.mat');
-load('E:\DataProcessing\speaker-listener_experiment\AudioData\from EEG\00-LZR-Listener-hilbert-sound_64Hz_lowpass8Hz.mat')
-% load('E:\DataProcessing\speaker-listener_experiment\AudioData\from EEG\01-CYX-Listener-hilbert-sound_64Hz_lowpass8Hz.mat');
-% audio_EEGBlock = data_filtered_8Hz.trial;
 
 %% data name
 p = pwd;
 
 %% load EEG data
-load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref-64Hz.mat');
+% load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref-64Hz.mat');
 % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\01-CYX-Listener-ICA-filter-reref-64Hz.mat')
+load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),'data_filtered_theta');
 
 
 % combine
@@ -51,12 +42,15 @@ EEGBlock = EEGBlock';
 % load('CountBalanceTable_listener0_analysis.mat')
 % load('CountBalanceTable_listener01.mat')
 
-load('CountBalanceTable.mat')
+% load(strcat('G:\Speaker-listener_experiment\listener\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
+load(strcat('H:\Speaker-listener2017\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
+% load(strcat('E:\DataProcessing\speaker-listener_experiment\counterbalanceTable\CountBalanceTable_listener',dataName(1:3),'.mat'));
+% 
 %% timelag
 Fs = 64;
 % timelag = -250:500/32:500;
 timelag = -250:(1000/Fs):500;
-% timelag = timelag(33);
+% timelag = timelag(33:49);
 % timelag = 0;
 
 %% length
