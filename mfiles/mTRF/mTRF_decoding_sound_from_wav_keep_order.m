@@ -42,9 +42,9 @@ EEGBlock = EEGBlock';
 % load('CountBalanceTable_listener0_analysis.mat')
 % load('CountBalanceTable_listener01.mat')
 
-% load(strcat('G:\Speaker-listener_experiment\listener\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
-load(strcat('H:\Speaker-listener2017\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
-% load(strcat('E:\DataProcessing\speaker-listener_experiment\counterbalanceTable\CountBalanceTable_listener',dataName(1:3),'.mat'));
+load(strcat('G:\Speaker-listener_experiment\listener\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
+% load(strcat('H:\Speaker-listener2017\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
+% % load(strcat('E:\DataProcessing\speaker-listener_experiment\counterbalanceTable\CountBalanceTable_listener',dataName(1:3),'.mat'));
 % 
 %% timelag
 Fs = 64;
