@@ -60,7 +60,8 @@ for i = 1 : 20
             r_rank_max_unattend_acc = 0;
             
             for r_rank = 1 : cca_comp
-                bandName = strcat(' 0.5Hz-40Hz 64Hz r rank',num2str(r_rank));
+                %                 bandName = strcat(' 0.5Hz-40Hz 64Hz r rank',num2str(r_rank));
+                bandName = strcat(' 2Hz-8Hz 64Hz r rank',num2str(r_rank));
                 
                 %%  CCA speaker listener plot
                 % p = pwd;

@@ -96,6 +96,32 @@ cfg.bpfilter = 'yes';
 cfg.bpfreq = [2 8];
 data_filtered_theta = ft_preprocessing(cfg,data_listener_reref);
 
+% alpha
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [8 12];
+data_filtered_alpha = ft_preprocessing(cfg,data_listener_reref);
+
+% beta
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [12 30];
+data_filtered_beta = ft_preprocessing(cfg,data_listener_reref);
+
+
+% delta
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [0.5 4];
+data_filtered_delta = ft_preprocessing(cfg,data_listener_reref);
+
+
+% narrow_theta
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [4 7];
+data_filtered_narrow_theta= ft_preprocessing(cfg,data_listener_reref);
+
 
 %% resample to 64Hz
 cfg = [];
@@ -107,6 +133,27 @@ cfg = [];
 cfg.resamplefs = 64;
 cfg.detrend    = 'no';
 data_filtered_theta = ft_resampledata(cfg, data_filtered_theta);
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_alpha = ft_resampledata(cfg, data_filtered_alpha);
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_beta = ft_resampledata(cfg, data_filtered_beta);
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_delta = ft_resampledata(cfg, data_filtered_delta);
+
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_narrow_theta = ft_resampledata(cfg, data_filtered_narrow_theta);
 
 %% view after bandpass result
 cfg = [];

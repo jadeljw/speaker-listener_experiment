@@ -71,7 +71,7 @@ data_speaker2_reref = ft_preprocessing(cfg,data_speaker2_total_after_ica);
 cfg = [];
 cfg.bpfilter = 'yes';
 cfg.bpfreq = [0.5 40];
-data_filtered_boradband = ft_preprocessing(cfg,data_speaker2_reref);
+data_filtered_broadband = ft_preprocessing(cfg,data_speaker2_reref);
 
 % theta
 cfg = [];
@@ -79,11 +79,31 @@ cfg.bpfilter = 'yes';
 cfg.bpfreq = [2 8];
 data_filtered_theta = ft_preprocessing(cfg,data_speaker2_reref);
 
+
+% alpha
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [8 12];
+data_filtered_alpha = ft_preprocessing(cfg,data_speaker2_reref);
+
+% beta
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [12 30];
+data_filtered_beta = ft_preprocessing(cfg,data_speaker2_reref);
+
+
+% delta
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [0.5 4];
+data_filtered_delta = ft_preprocessing(cfg,data_speaker2_reref);
+
 %% resample to 64Hz
 cfg = [];
 cfg.resamplefs = 64;
 cfg.detrend    = 'no';
-data_filtered_boradband = ft_resampledata(cfg, data_filtered_boradband);
+data_filtered_broadband = ft_resampledata(cfg, data_filtered_broadband);
 
 cfg = [];
 cfg.resamplefs = 64;
@@ -91,24 +111,63 @@ cfg.detrend    = 'no';
 data_filtered_theta = ft_resampledata(cfg, data_filtered_theta);
 
 
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_alpha = ft_resampledata(cfg, data_filtered_alpha);
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_beta = ft_resampledata(cfg, data_filtered_beta);
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_delta = ft_resampledata(cfg, data_filtered_delta);
+
+
 %% different type 
 
+% theta
 data_speakerB_retell_theta = cell(1,19);
 data_speakerB_read_theta = cell(1,22);
 
 data_speakerB_retell_theta(1:19) = data_filtered_theta.trial(1:19);
 data_speakerB_read_theta(1:22)  = data_filtered_theta.trial(20:end);
 
+% boradband
+data_speakerB_retell_broadband = cell(1,19);
+data_speakerB_read_broadband = cell(1,22);
 
-data_speakerB_retell_boradband = cell(1,19);
-data_speakerB_read_boradband = cell(1,22);
+data_speakerB_retell_broadband(1:19) = data_filtered_broadband.trial(1:19);
+data_speakerB_read_broadband(1:22)  = data_filtered_broadband.trial(20:end);
 
-data_speakerB_retell_boradband(1:19) = data_filtered_boradband.trial(1:19);
-data_speakerB_read_boradband(1:22)  = data_filtered_boradband.trial(20:end);
+
+% alpha
+data_speakerB_retell_alpha = cell(1,19);
+data_speakerB_read_alpha = cell(1,22);
+
+data_speakerB_retell_alpha(1:19) = data_filtered_alpha.trial(1:19);
+data_speakerB_read_alpha(1:22)  = data_filtered_alpha.trial(20:end);
+
+% beta
+data_speakerB_retell_beta = cell(1,19);
+data_speakerB_read_beta = cell(1,22);
+
+data_speakerB_retell_beta(1:19) = data_filtered_beta.trial(1:19);
+data_speakerB_read_beta(1:22)  = data_filtered_beta.trial(20:end);
+
+% delta
+data_speakerB_retell_delta = cell(1,19);
+data_speakerB_read_delta = cell(1,22);
+
+data_speakerB_retell_delta(1:19) = data_filtered_delta.trial(1:19);
+data_speakerB_read_delta(1:22)  = data_filtered_delta.trial(20:end);
 
 %% load recording order
-load('H:\Speaker-listener_experiment\speaker\20170622-FS\speaker02-recording-order.mat');
-load('H:\Speaker-listener_experiment\speaker\20170622-FS\data_preprocessing\Speaker02-FS-read_retell.mat');
+load('G:\Speaker-listener_experiment\speaker\20170622-FS\speaker02-recording-order.mat');
+load('G:\Speaker-listener_experiment\speaker\20170622-FS\data_preprocessing\Speaker02-FS-read_retell.mat');
 
 read=read(~isnan(read));
 retell=retell(~isnan(retell));
@@ -116,31 +175,41 @@ retell=retell(~isnan(retell));
 read_repeat = diff(read);
 retell_repeat = diff(retell);
 
-% 第二段reading的材料用的是第一次录的
-read_repeat(2) = 1;
-read_repeat(3) = 0;
-
-
 % read valid
 for i = 1 : length(read_repeat)
     if read_repeat(i)
-        data_speakerB_read_boradband_valid{read(i)} = data_speakerB_read_boradband{i};
+        data_speakerB_read_broadband_valid{read(i)} = data_speakerB_read_broadband{i};
         data_speakerB_read_theta_valid{read(i)} = data_speakerB_read_theta{i};
+        data_speakerB_read_alpha_valid{read(i)} = data_speakerB_read_alpha{i};
+        data_speakerB_read_beta_valid{read(i)} = data_speakerB_read_beta{i};
+        data_speakerB_read_delta_valid{read(i)} = data_speakerB_read_delta{i};
     end
 end
-% last one
-data_speakerB_read_boradband_valid{read(i)+1} = data_speakerB_read_boradband{i+1};
-data_speakerB_read_theta_valid{read(i)+1}  = data_speakerB_read_theta{i+1};
 
+% last one
+data_speakerB_read_broadband_valid{read(i)+1} = data_speakerB_read_broadband{i+1};
+data_speakerB_read_theta_valid{read(i)+1}  = data_speakerB_read_theta{i+1};
+data_speakerB_read_alpha_valid{read(i)+1} = data_speakerB_read_alpha{i+1};
+data_speakerB_read_beta_valid{read(i)+1}  = data_speakerB_read_beta{i+1};
+data_speakerB_read_delta_valid{read(i)+1} = data_speakerB_read_delta{i+1};
+
+
+%
 % retell valid
 for i = 1 : length(retell_repeat)
     if retell_repeat(i)
-        disp(retell(i))
-        data_speakerB_retell_boradband_valid{retell(i)} = data_speakerB_retell_boradband{i};
+        data_speakerB_retell_broadband_valid{retell(i)} = data_speakerB_retell_broadband{i};
         data_speakerB_retell_theta_valid{retell(i)} = data_speakerB_retell_theta{i};
+        data_speakerB_retell_alpha_valid{retell(i)} = data_speakerB_retell_alpha{i};
+        data_speakerB_retell_beta_valid{retell(i)} = data_speakerB_retell_beta{i};
+        data_speakerB_retell_delta_valid{retell(i)} = data_speakerB_retell_delta{i};
     end
 end
 
 % last one
-data_speakerB_retell_boradband_valid{retell(i)+1} = data_speakerB_retell_boradband{i+1};
+data_speakerB_retell_broadband_valid{retell(i)+1} = data_speakerB_retell_broadband{i+1};
 data_speakerB_retell_theta_valid{retell(i)+1}  = data_speakerB_retell_theta{i+1};
+data_speakerB_retell_alpha_valid{retell(i)+1} = data_speakerB_retell_alpha{i+1};
+data_speakerB_retell_beta_valid{retell(i)+1}  = data_speakerB_retell_beta{i+1};
+data_speakerB_retell_delta_valid{retell(i)+1} = data_speakerB_retell_delta{i+1};
+

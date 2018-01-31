@@ -15,7 +15,7 @@ cfg.marker='on';
 % cfg.marker='off';
 % cfg.marker='numbers';
 cfg.markersize=6;
-cfg.colorbar='yes';
+cfg.colorbar='no';
 data.powspctrm = vector; % [N x 1]
 data.label = chn_names; % {1 x N}
 

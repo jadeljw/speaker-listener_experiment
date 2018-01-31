@@ -85,33 +85,33 @@ for ii = 1 : 20
     
     %% load speaker data
     load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker01-CFY-read_retell_valid.mat',...
-        'data_speakerA_retell_boradband_valid','data_speakerA_read_boradband_valid');
+        'data_speakerA_retell_theta_valid','data_speakerA_read_theta_valid');
     load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid.mat',...
-        'data_speakerB_retell_boradband_valid','data_speakerB_read_boradband_valid');
+        'data_speakerB_retell_theta_valid','data_speakerB_read_theta_valid');
     
     
     if strcmp(Type{1},'reading')
         % reading part first
-        data_EEG_speakerA = [data_speakerA_read_boradband_valid(speaker_story_read_order) data_speakerA_retell_boradband_valid(speaker_story_retell_order)];
-        data_EEG_speakerB = [data_speakerB_read_boradband_valid(speaker_story_read_order) data_speakerB_retell_boradband_valid(speaker_story_retell_order)];
+        data_EEG_speakerA = [data_speakerA_read_theta_valid(speaker_story_read_order) data_speakerA_retell_theta_valid(speaker_story_retell_order)];
+        data_EEG_speakerB = [data_speakerB_read_theta_valid(speaker_story_read_order) data_speakerB_retell_theta_valid(speaker_story_retell_order)];
     else
         % retelling part first
-        data_EEG_speakerA = [data_speakerA_retell_boradband_valid(speaker_story_retell_order) data_speakerA_read_boradband_valid(speaker_story_read_order)];
-        data_EEG_speakerB = [data_speakerB_retell_boradband_valid(speaker_story_retell_order) data_speakerB_read_boradband_valid(speaker_story_read_order)];
+        data_EEG_speakerA = [data_speakerA_retell_theta_valid(speaker_story_retell_order) data_speakerA_read_theta_valid(speaker_story_read_order)];
+        data_EEG_speakerB = [data_speakerB_retell_theta_valid(speaker_story_retell_order) data_speakerB_read_theta_valid(speaker_story_read_order)];
         
     end
     
     
     
     %% load listener data
-    load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),'data_filtered_boradband');
-    data_EEG_listener = data_filtered_boradband.trial;
+    load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),'data_filtered_theta');
+    data_EEG_listener = data_filtered_theta.trial;
     
     %% Channel Index
-    % listener_chn= [6:32 34:42 44:59 61:63];
-    % speaker_chn = [1:32 34:42 44:59 61:63];
-    listener_chn= [7:13 16:22 25:31 35:41 45:51];
-    speaker_chn = [7:13 16:22 25:31 35:41 45:51];
+    listener_chn= [1:32 34:42 44:59 61:63];
+    speaker_chn = [6:32 34:42 44:59 61:63];
+%     listener_chn= [7:13 16:22 25:31 35:41 45:51];
+%     speaker_chn = [7:13 16:22 25:31 35:41 45:51];
     
     cca_comp = 15;
     
@@ -276,7 +276,7 @@ for ii = 1 : 20
         for r = 1 : cca_comp
             
             % r rank initial
-            band_name = strcat(' 0.5Hz-40Hz 64Hz central r rank',num2str(r));
+            band_name = strcat(' 2Hz-8Hz 64Hz r rank',num2str(r));
             mkdir(band_name(2:end));
             cd(band_name(2:end))
             
