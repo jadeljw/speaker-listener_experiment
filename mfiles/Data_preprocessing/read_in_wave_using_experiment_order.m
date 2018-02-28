@@ -1,8 +1,8 @@
 %% read-in .wav files
 % dirA='H:\Speaker-listener_experiment\speaker\20170619-CFY';
 % dirB='H:\Speaker-listener_experiment\speaker\20170622-FS';
-% dir = 'G:\Speaker-listener_experiment\listener\program\Listener20171113\audio_new';
-dir = 'H:\Speaker-listener2017\program\Listener20171113\audio_new';
+dir = 'G:\Speaker-listener_experiment\listener\program\Listener20171113\audio_new';
+% dir = 'H:\Speaker-listener2017\program\Listener20171113\audio_new';
 Fs=44100;
 fs_down=64;
 
@@ -11,8 +11,8 @@ end_story = 28;
 
 %% CountBalance
 % load('CountBalanceTable_listener01.mat')
-% load('G:\Speaker-listener_experiment\listener\data\20171214-WXZ\CountBalanceTable_listener114.mat');
-load('H:\Speaker-listener2017\data\20171221-LYB\CountBalanceTable_listener120.mat');
+load('G:\Speaker-listener_experiment\listener\data\20171214-WXZ\CountBalanceTable_listener114.mat');
+% load('H:\Speaker-listener2017\data\20171221-LYB\CountBalanceTable_listener120.mat');
 %% workpath
 p = pwd;
 
@@ -49,6 +49,9 @@ end
 
 
 %% lowpass
+
+
+% theta
 fs_down= 64;
 lowpass_filter = 8;
 % AudioA_retell=  ft_preproc_lowpassfilter(YA_retell,Fs,lowpass_filter);
@@ -57,8 +60,8 @@ lowpass_filter = 8;
 % AudioB_read = ft_preproc_lowpassfilter(YB_read,Fs,lowpass_filter);
 for i= 1 : 28
    
-    data_left{i} = ft_preproc_lowpassfilter(data_left{i},fs_down,lowpass_filter);
-    data_right{i} = ft_preproc_lowpassfilter(data_right{i},fs_down,lowpass_filter);
+    data_left_theta{i} = ft_preproc_lowpassfilter(data_left{i},fs_down,lowpass_filter);
+    data_right_theta{i} = ft_preproc_lowpassfilter(data_right{i},fs_down,lowpass_filter);
 end
 
 

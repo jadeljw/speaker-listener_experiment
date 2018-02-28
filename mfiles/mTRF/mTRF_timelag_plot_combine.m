@@ -28,11 +28,11 @@ lambda = 2^5;
 % bandName = strcat(' 64Hz 2-8Hz sound from EEG lambda',num2str(lambda),' 10-65s unattend only');
 % bandName = strcat(' 64Hz 2-8Hz lambda',num2str(lambda),' 10-55s');
 
-bandName = strcat(' 64Hz 2-8Hz sound from wav Listener120 lambda',num2str(lambda),' 10-55s');
+bandName = strcat(' 64Hz 2-8Hz sound from wav Listener101 lambda',num2str(lambda),' 10-55s');
 
 %%  mTRF plot
 % p = pwd;
-p = 'E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\listener120';
+p = 'E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\new method\listener101';
 % category = 'mTRF';
 category = '64Hz 2-8Hz lambda32 10-55s';
 
@@ -41,12 +41,13 @@ for  j = 1 : length(timelag)
     %     datapath = strcat(p,'\',category);
     %     dataName = strcat('mTRF_sound_EEG_result+',num2str(timelag(j)),'ms.mat');
     %     datapath = strcat(p,'\',category,'\-200ms_500ms_64Hz');
-    datapath = strcat(p,'\',category);
+    %     datapath = strcat(p,'\',category);
+    datapath =p;
     %     dataName = strcat('mTRF_sound_EEG_result+',num2str((1000/Fs)*timelag(j)),'ms.mat');
-%     dataName = strcat('mTRF_sound_EEG_result+',num2str((1000/Fs)*timelag(j)),'ms',bandName,'.mat');
+    %     dataName = strcat('mTRF_sound_EEG_result+',num2str((1000/Fs)*timelag(j)),'ms',bandName,'.mat');
     dataName = strcat('mTRF_sound_EEG_result+',num2str(timelag(j)),'ms',bandName,'.mat');
-%     band_name = strcat(' broadband 0.1-40Hz lambda',num2str(lambda(j)));
-%     dataName = strcat('mTRF_sound_EEG_result -200~500 ms',band_name,'.mat');
+    %     band_name = strcat(' broadband 0.1-40Hz lambda',num2str(lambda(j)));
+    %     dataName = strcat('mTRF_sound_EEG_result -200~500 ms',band_name,'.mat');
     load(strcat(datapath,'\',dataName));
     
     %reconstruction accuracy
@@ -59,13 +60,13 @@ for  j = 1 : length(timelag)
     Decoding_result_attend_decoder = recon_AttendDecoder_attend_corr-recon_AttendDecoder_unattend_corr;
     Individual_subjects_result_attend = mean(sum(Decoding_result_attend_decoder>0)/length(Decoding_result_attend_decoder));
     % ttest
-%     Decoding_acc_attend_ttest_result(j) = ttest(Individual_subjects_result_attend,0.5);
+    %     Decoding_acc_attend_ttest_result(j) = ttest(Individual_subjects_result_attend,0.5);
     decoding_acc_attended(j)= Individual_subjects_result_attend;
     
     Decoding_result_unattend_decoder = recon_UnattendDecoder_unattend_corr-recon_UnattendDecoder_attend_corr;
     Individual_subjects_result_unattend = mean(sum(Decoding_result_unattend_decoder>0)/length(Decoding_result_unattend_decoder));
     % ttest
-%     Decoding_acc_unattend_ttest_result(j) = ttest(Individual_subjects_result_unattend,0.5);
+    %     Decoding_acc_unattend_ttest_result(j) = ttest(Individual_subjects_result_unattend,0.5);
     decoding_acc_unattended(j) = Individual_subjects_result_unattend;
     
 end
@@ -74,7 +75,7 @@ end
 % hold on; plot((1000/Fs)*timelag,recon_AttendDecoder_unattend_total,'b');
 figure; plot(timelag,recon_AttendDecoder_attend_total,'r');
 hold on; plot(timelag,recon_AttendDecoder_unattend_total,'b');
-xlabel('Times(ms)'); 
+xlabel('Times(ms)');
 ylabel('r-value')
 saveName1 = strcat( 'Attended decoder Reconstruction-Acc across all time-lags using mTRF method',bandName,'.jpg');
 % saveName1 = strcat( 'Attended decoder Reconstruction-Acc across all time-lags using mTRF method',band_name,'.jpg');
@@ -88,7 +89,7 @@ close
 % hold on; plot((1000/Fs)*timelag,recon_UnattendDecoder_unattend_total,'b');
 figure; plot(timelag,recon_UnattendDecoder_attend_total,'r');
 hold on; plot(timelag,recon_UnattendDecoder_unattend_total,'b');
-xlabel('Times(ms)'); 
+xlabel('Times(ms)');
 ylabel('r-value')
 saveName2 = strcat('Unattended decoder Reconstruction-Acc across all time-lags using mTRF method',bandName,'.jpg');
 % saveName2 = strcat('Unattended decoder Reconstruction-Acc across all time-lags using mTRF method',band_name,'.jpg');
@@ -106,7 +107,7 @@ figure; plot(timelag,decoding_acc_attended*100,'r');
 % hold on;plot(timelag(Decoding_acc_attend_ttest_result>0),decoding_acc_attended(Decoding_acc_attend_ttest_result>0)*100,'r*');
 hold on; plot(timelag,decoding_acc_unattended*100,'b');
 % hold on;plot(timelag(Decoding_acc_unattend_ttest_result>0),decoding_acc_unattended(Decoding_acc_unattend_ttest_result>0)*100,'b*');
-xlabel('Times(ms)'); 
+xlabel('Times(ms)');
 ylabel('Decoding accuracy(%)')
 saveName3 =strcat('Decoding-Accuracy across all time-lags using mTRF method',bandName,'.jpg');
 % saveName3 =strcat('Decoding-Accuracy across all time-lags using mTRF method',band_name,'.jpg');

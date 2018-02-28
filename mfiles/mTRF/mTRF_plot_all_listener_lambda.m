@@ -11,13 +11,12 @@ layout = 'E:\DataProcessing\easycapm1.mat';
 
 %% listener
 listener_num = 20;
-
+% lambda_para = [0 5 10 15 20];
 %% timelag
 
 % timelag = -200:25:500;
 Fs = 64;
-% timelag = -250:(1000/Fs):500;
-timelag = 0;
+timelag = -250:(1000/Fs):500;
 lambda_para = 5;
 
 for lambda_num = 1 : length(lambda_para)
@@ -69,7 +68,7 @@ for lambda_num = 1 : length(lambda_para)
             file_name = strcat('listener1',num2str(i));
         end
         
-        bandName = strcat(' 64Hztheta sound from wav l', file_name(2:end),' lambda',num2str(lambda),' 10-55s');
+        bandName = strcat(' 64Hz 2-8Hz sound from wav l', file_name(2:end),' lambda',num2str(lambda),' 10-55s');
         
         mkdir(file_name);
         cd(file_name);
@@ -77,7 +76,7 @@ for lambda_num = 1 : length(lambda_para)
         
         %%  mTRF plot
         % p = pwd;
-        p = 'E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\theta_125-250';
+        p = strcat('E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\lambda',num2str(lambda));
         % category = 'mTRF';
         %     category = '64Hz 2-8Hz lambda32 10-55s';
         category =file_name;
@@ -128,38 +127,38 @@ for lambda_num = 1 : length(lambda_para)
 %         p = pwd;
 %         cd(p(1:end-(length('topoplot')+1)));
         
-%         %% timelag plot
-%         figure; plot(timelag,recon_AttendDecoder_attend_total,'r');
-%         hold on; plot(timelag,recon_AttendDecoder_unattend_total,'b');
-%         xlabel('Times(ms)');
-%         ylabel('r-value')
-%         saveName1 = strcat( 'Attended decoder Reconstruction-Acc across all time-lags using mTRF method',bandName,'.jpg');
-%         title(saveName1(1:end-4));
-%         legend('r Attended ','r unAttended','Location','northeast');
-%         % ylim([-0.03,0.03]);
-%         saveas(gcf,saveName1);
-%         close
-%         
-%         figure; plot(timelag,recon_UnattendDecoder_attend_total,'r');
-%         hold on; plot(timelag,recon_UnattendDecoder_unattend_total,'b');
-%         xlabel('Times(ms)');
-%         ylabel('r-value')
-%         saveName2 = strcat('Unattended decoder Reconstruction-Acc across timelags using mTRF method',bandName,'.jpg');
-%         title(saveName2(1:end-4));
-%         legend('r Attended ','r unAttended','Location','northeast');
-%         % ylim([-0.03,0.03]);
-%         saveas(gcf,saveName2);
-%         close
-%         
-%         figure; plot(timelag,decoding_acc_attended*100,'r');
-%         hold on; plot(timelag,decoding_acc_unattended*100,'b');
-%         xlabel('Times(ms)');
-%         ylabel('Decoding accuracy(%)')
-%         saveName3 =strcat('Decoding-Accuracy across timelags using mTRF method',bandName,'.jpg');
-%         title(saveName3(1:end-4));
-%         legend('Attended decoder','Unattended decoder','Location','northeast');ylim([30,100]);
-%         saveas(gcf,saveName3);
-%         close
+        %% timelag plot
+        figure; plot(timelag,recon_AttendDecoder_attend_total,'r');
+        hold on; plot(timelag,recon_AttendDecoder_unattend_total,'b');
+        xlabel('Times(ms)');
+        ylabel('r-value')
+        saveName1 = strcat( 'Attended decoder Reconstruction-Acc across all time-lags using mTRF method',bandName,'.jpg');
+        title(saveName1(1:end-4));
+        legend('r Attended ','r unAttended','Location','northeast');
+        % ylim([-0.03,0.03]);
+        saveas(gcf,saveName1);
+        close
+        
+        figure; plot(timelag,recon_UnattendDecoder_attend_total,'r');
+        hold on; plot(timelag,recon_UnattendDecoder_unattend_total,'b');
+        xlabel('Times(ms)');
+        ylabel('r-value')
+        saveName2 = strcat('Unattended decoder Reconstruction-Acc across timelags using mTRF method',bandName,'.jpg');
+        title(saveName2(1:end-4));
+        legend('r Attended ','r unAttended','Location','northeast');
+        % ylim([-0.03,0.03]);
+        saveas(gcf,saveName2);
+        close
+        
+        figure; plot(timelag,decoding_acc_attended*100,'r');
+        hold on; plot(timelag,decoding_acc_unattended*100,'b');
+        xlabel('Times(ms)');
+        ylabel('Decoding accuracy(%)')
+        saveName3 =strcat('Decoding-Accuracy across timelags using mTRF method',bandName,'.jpg');
+        title(saveName3(1:end-4));
+        legend('Attended decoder','Unattended decoder','Location','northeast');ylim([30,100]);
+        saveas(gcf,saveName3);
+        close
         
         recon_AttendDecoder_attend_total_all_listener(i,:) = recon_AttendDecoder_attend_total;
         recon_AttendDecoder_unattend_total_all_listener(i,:)  = recon_AttendDecoder_unattend_total;

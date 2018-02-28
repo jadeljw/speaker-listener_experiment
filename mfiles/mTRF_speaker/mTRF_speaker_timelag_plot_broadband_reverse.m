@@ -6,9 +6,12 @@
 
 %% initial
 listener_chn= [1:32 34:42 44:59 61:63];
-% speaker_chn = [1:32 34:42 44:59 61:63];
+% speaker_chn = 2;
+% speaker_chn = [2 5 10 28 40 50];
+speaker_chn = [1:32 34:42 44:59 61:63];
 % speaker_chn = [17:21 26:30 36:40];
-speaker_chn = [30 36 38];
+% speaker_chn = 40;
+% speaker_chn = [9:11 18:20 27:29];
 load('E:\DataProcessing\label66.mat');
 layout = 'E:\DataProcessing\easycapm1.mat';
 
@@ -16,7 +19,7 @@ layout = 'E:\DataProcessing\easycapm1.mat';
 
 %% listener
 listener_num = 20;
-lambda = 2^-5;
+lambda = 2^5;
 
 
 %% timelag
@@ -24,7 +27,7 @@ lambda = 2^-5;
 % timelag = -200:25:500;
 Fs = 64;
 timelag = -250:(1000/Fs):500;
-
+% timelag = 0;
 
 Attend_topoplot_listener_mean_all_listener = zeros(listener_num,length(speaker_chn),length(timelag),length(listener_chn));
 Unattend_topoplot_listener_mean_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag),length(listener_chn));
@@ -35,10 +38,14 @@ recon_UnattendDecoder_attend_total_all_listener  = zeros(listener_num,length(spe
 recon_UnattendDecoder_unattend_total_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
 decoding_acc_attended_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
 decoding_acc_unattended_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
+decoding_acc_attended_abs_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
+decoding_acc_unattended_abs_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
 Decoding_acc_attend_ttest_result_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
 Decoding_acc_unattend_ttest_result_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
 
 
+mkdir('theta reverse');
+cd('theta reverse');
 
 for i = 1 : listener_num
     
@@ -52,17 +59,19 @@ for i = 1 : listener_num
     mkdir(file_name);
     cd(file_name);
     
-    band_name = strcat(' 64Hz 2-8Hz speakerEEG mTRF Listener',file_name(end-2:end),' lambda',num2str(lambda),' 10-55s');
+    band_name = strcat(' 64Hz theta speakerEEG mTRF Listener',file_name(end-2:end),' lambda',num2str(lambda),' 10-55s');
     
     
     for chn = 1:length(speaker_chn)
+        
         chn_file_name = strcat(num2str(chn),'-',label66{speaker_chn(chn)});
         mkdir(chn_file_name);
         cd(chn_file_name);
         
+        disp(strcat('listener',num2str(i),'chn',chn_file_name));
         %%  CCA speaker listener plot
         % p = pwd;
-        p =strcat('E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF_speaker\Listener-Speaker\broadband small lambda\',file_name);
+        p =strcat('E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF_speaker\Listener-Speaker\theta reverse\',file_name);
         % category = 'mTRF';
         category = chn_file_name;
         
@@ -79,8 +88,8 @@ for i = 1 : listener_num
         timelag_unattend_topoplot_listener_mean = zeros(length(timelag),length(listener_chn));
         
         
-        mkdir('topoplot');
-        cd('topoplot');
+%         mkdir('topoplot');
+%         cd('topoplot');
         for  j = 1 : length(timelag)
             datapath = strcat(p,'\',category);
             dataName = strcat('mTRF_speakerEEG_listenerEEG_result+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.mat');
@@ -107,24 +116,24 @@ for i = 1 : listener_num
             timelag_attend_topoplot_listener_mean(j,:) = mean(train_mTRF_attend_w_all_story_mean_mat,2);
             timelag_unattend_topoplot_listener_mean(j,:) = mean(train_mTRF_unattend_w_all_story_mean_mat,2);
             
-            
-            subplot(121);
-            U_topoplot(abs(zscore(mean(train_mTRF_attend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(w_A(:,1));
-            title('Attended decoder');
-            subplot(122);
-            U_topoplot(abs(zscore(mean(train_mTRF_unattend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(v_B(:,1));
-            title('Unattended decoder');
-            save_name = strcat(file_name,'-Mean Topoplot timelag ',num2str(timelag(j)),'ms-',label66{speaker_chn(chn)},'.jpg');
-            suptitle(save_name(1:end-4));
-            saveas(gcf,save_name)
-            close;
+%             
+%             subplot(121);
+%             U_topoplot(abs(zscore(mean(train_mTRF_attend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(w_A(:,1));
+%             title('Attended decoder');
+%             subplot(122);
+%             U_topoplot(abs(zscore(mean(train_mTRF_unattend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(v_B(:,1));
+%             title('Unattended decoder');
+%             save_name = strcat(file_name,'-Mean Topoplot timelag ',num2str(timelag(j)),'ms-',label66{speaker_chn(chn)},'.jpg');
+%             suptitle(save_name(1:end-4));
+%             saveas(gcf,save_name)
+%             close;
             
         end
-        p = pwd;
-        cd(p(1:end-(length('topoplot')+1)));
+%         p = pwd;
+%         cd(p(1:end-(length('topoplot')+1)));
         
         % Attended decoder
-        figure; plot(timelag,recon_AttendDecoder_attend_total,'r');
+        figure('visible','off'); plot(timelag,recon_AttendDecoder_attend_total,'r');
         hold on; plot(timelag,recon_AttendDecoder_unattend_total,'b');
         xlabel('Times(ms)');
         ylabel('r-value')
@@ -136,7 +145,7 @@ for i = 1 : listener_num
         
         
         % Unattended decoder
-        figure; plot(timelag,recon_UnattendDecoder_attend_total,'r');
+        figure('visible','off'); plot(timelag,recon_UnattendDecoder_attend_total,'r');
         hold on; plot(timelag,recon_UnattendDecoder_unattend_total,'b');
         xlabel('Times(ms)');
         ylabel('r-value')
@@ -148,7 +157,7 @@ for i = 1 : listener_num
         close
         
         % decoding Acc
-        figure;plot(timelag,decoding_acc_attended*100,'r');
+        figure('visible','off');plot(timelag,decoding_acc_attended*100,'r');
         hold on; plot(timelag,decoding_acc_unattended*100,'b');
         xlabel('Times(ms)');
         ylabel('Decoding accuracy(%)')

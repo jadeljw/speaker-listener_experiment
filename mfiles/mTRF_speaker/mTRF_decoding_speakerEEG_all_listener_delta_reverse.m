@@ -8,10 +8,15 @@
 
 % using every channel of speaker EEG as audio input
 %% initial
+load('E:\DataProcessing\chn_re_index.mat');
+chn_re_index = chn_re_index(1:64);
+
 listener_chn= [1:32 34:42 44:59 61:63];
-% speaker_chn = [1:32 34:42 44:59 61:63];
+% speaker_chn = 5;
+% speaker_chn = [2 5 10 28 40 50];
+speaker_chn = [1:32 34:42 44:59 61:63];
 % speaker_chn = [17:21 26:30 36:40];
-speaker_chn = [9:11 18:20 27:29];
+% speaker_chn = [9:11 18:20 27:29];
 load('E:\DataProcessing\label66.mat');
 layout = 'E:\DataProcessing\easycapm1.mat';
 
@@ -47,10 +52,10 @@ dataFile_all = {'20171118-YJMQ','20171122-LTX','20171122-RT',...
 
 
 
-mkdir('alpha');
-cd('alpha');
+mkdir('delta reverse');
+cd('delta reverse');
 
-for i = 11 : 20
+for i = 1 : 13
     
     %% listener name
     if i < 10
@@ -67,7 +72,7 @@ for i = 11 : 20
     
     %% band name
     lambda = 2^5;
-    band_name = strcat(' 64Hz 2-8Hz speakerEEG mTRF Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
+    band_name = strcat(' 64Hz delta speakerEEG mTRF Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
     
     %% CounterBalanceTable
     load(strcat('E:\DataProcessing\speaker-listener_experiment\CountBalanceTable\CountBalanceTable_listener',dataName(1:3),'.mat'));
@@ -100,19 +105,19 @@ for i = 11 : 20
     
     % boradband
     load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker01-CFY-read_retell_valid.mat',...
-        'data_speakerA_retell_alpha_valid','data_speakerA_read_alpha_valid');
+        'data_speakerA_retell_delta_valid','data_speakerA_read_delta_valid');
     load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid.mat',...
-        'data_speakerB_retell_alpha_valid','data_speakerB_read_alpha_valid');
+        'data_speakerB_retell_delta_valid','data_speakerB_read_delta_valid');
     
     
     if strcmp(Type{1},'reading')
         % reading part first
-        data_EEG_speakerA = [data_speakerA_read_boradband_valid(speaker_story_read_order) data_speakerA_retell_boradband_valid(speaker_story_retell_order)];
-        data_EEG_speakerB = [data_speakerB_read_boradband_valid(speaker_story_read_order) data_speakerB_retell_boradband_valid(speaker_story_retell_order)];
+        data_EEG_speakerA = [data_speakerA_read_delta_valid(speaker_story_read_order) data_speakerA_retell_delta_valid(speaker_story_retell_order)];
+        data_EEG_speakerB = [data_speakerB_read_delta_valid(speaker_story_read_order) data_speakerB_retell_delta_valid(speaker_story_retell_order)];
     else
         % retelling part first
-        data_EEG_speakerA = [data_speakerA_retell_boradband_valid(speaker_story_retell_order) data_speakerA_read_boradband_valid(speaker_story_read_order)];
-        data_EEG_speakerB = [data_speakerB_retell_boradband_valid(speaker_story_retell_order) data_speakerB_read_boradband_valid(speaker_story_read_order)];
+        data_EEG_speakerA = [data_speakerA_retell_delta_valid(speaker_story_retell_order) data_speakerA_read_delta_valid(speaker_story_read_order)];
+        data_EEG_speakerB = [data_speakerB_retell_delta_valid(speaker_story_retell_order) data_speakerB_read_delta_valid(speaker_story_read_order)];
         
     end
     
@@ -140,19 +145,20 @@ for i = 11 : 20
     % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref-64Hz.mat');
     % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\01-CYX-Listener-ICA-filter-reref-64Hz.mat')
     %     load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),'data_filtered_theta');
-    load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),'data_filtered_alpha');
+    load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),'data_filtered_delta');
     
     % combine
     %     EEGBlock = data_filtered_theta.trial;
-    EEGBlock = data_filtered_boradband.trial;
+    EEGBlock = data_filtered_delta.trial;
     EEGBlock = EEGBlock';
+
     
     %% timelag
     Fs = 64;
     % timelag = -250:500/32:500;
     timelag = -250:(1000/Fs):500;
     % timelag = timelag(33:49);
-    %     timelag = 0;
+%         timelag = 0;
     
     %% length
     start_time = 10;
@@ -179,7 +185,7 @@ for i = 11 : 20
         for j = 1 : length(timelag)
             %% mTRF intitial
             
-            start_time = 0 + timelag(j);
+            start_time = 0  + timelag(j);
             end_time = 0 + timelag(j);
             % lambda = 1e5;
             
@@ -226,70 +232,76 @@ for i = 11 : 20
             MSE_recon_UnattendDecoder_attend_corr_train =  zeros(size(EEGBlock,1)-1,size(EEGBlock,1));
             
             %% mTRF train and test
-            for test_index = 1 : length(EEGBlock)
-                
-                if  strcmpi('A',AttendTarget{i})
-                    Audio_attend_test = data_EEG_speakerA{i}(speaker_chn(chn),speaker_time_index);
-                    Audio_unattend_test = data_EEG_speakerB{i}(speaker_chn(chn),speaker_time_index);
+            tic;
+            % train process
+            disp('Training...');
+            for train_index = 1 : length(EEGBlock)
+                % train story
+                if strcmpi('A',AttendTarget{train_index})
+                    Audio_attend_train = data_EEG_speakerA{train_index}(speaker_chn(chn),speaker_time_index);
+                    Audio_unattend_train= data_EEG_speakerB{train_index}(speaker_chn(chn),speaker_time_index);
                 else
-                    Audio_attend_test = data_EEG_speakerB{i}(speaker_chn(chn),speaker_time_index);
-                    Audio_unattend_test = data_EEG_speakerA{i}(speaker_chn(chn),speaker_time_index);
+                    Audio_attend_train = data_EEG_speakerB{train_index}(speaker_chn(chn),speaker_time_index);
+                    Audio_unattend_train = data_EEG_speakerA{train_index}(speaker_chn(chn),speaker_time_index);
                 end
                 
-                % EEG
-                EEG_test =  EEGBlock{test_index}(listener_chn,Listener_time_index);
-                
-                disp(strcat('Training story',num2str(test_index),'...'));
-                
-                % traing process
-                cnt_train_index = 1;
-                for train_index = 1 : length(EEGBlock)
-                    if train_index ~= test_index
-                        
-                        % train story
-                        if strcmpi('A',AttendTarget{i})
-                            Audio_attend_train = data_EEG_speakerA{i}(speaker_chn(chn),speaker_time_index);
-                            Audio_unattend_train= data_EEG_speakerB{i}(speaker_chn(chn),speaker_time_index);
-                        else
-                            Audio_attend_train = data_EEG_speakerB{i}(speaker_chn(chn),speaker_time_index);
-                            Audio_unattend_train = data_EEG_speakerA{i}(speaker_chn(chn),speaker_time_index);
-                        end
-                        
-                        % train EEG
-                        EEG_train =  EEGBlock{train_index}(listener_chn,Listener_time_index);
-                        
-                        %train process
-                        [w_train_mTRF_attend,t_train_mTRF_attend,con_train_mTRF_attend] = mTRFtrain(Audio_attend_train',EEG_train',Fs,-1,start_time,end_time,lambda);
-                        [w_train_mTRF_unattend,t_train_mTRF_unattend,con_train_mTRF_unattend] = mTRFtrain(Audio_unattend_train',EEG_train',Fs,-1,start_time,end_time,lambda);
-                        
-                        
-                        % record all weights into one matrix
-                        train_mTRF_attend_w_total(:,:,cnt_train_index) = w_train_mTRF_attend;
-                        train_mTRF_attend_con_total(:,:,cnt_train_index) = con_train_mTRF_attend;
-                        
-                        train_mTRF_unattend_w_total(:,:,cnt_train_index) = w_train_mTRF_unattend;
-                        train_mTRF_unattend_con_total(:,:,cnt_train_index) = con_train_mTRF_unattend;
-                        
-                        
-                        cnt_train_index = cnt_train_index + 1;
-                    end
-                    
+                % train EEG
+                if strcmpi(Space(train_index),'left')
+                    EEG_train =  EEGBlock{train_index}(listener_chn,Listener_time_index);
+                else
+                    EEG_train = EEGBlock{train_index}(chn_re_index,:);
+                    EEG_train =  EEG_train(listener_chn,Listener_time_index);
                 end
                 
+                %train process
+                [w_train_mTRF_attend,t_train_mTRF_attend,con_train_mTRF_attend] = mTRFtrain(Audio_attend_train',EEG_train',Fs,-1,start_time,end_time,lambda);
+                [w_train_mTRF_unattend,t_train_mTRF_unattend,con_train_mTRF_unattend] = mTRFtrain(Audio_unattend_train',EEG_train',Fs,-1,start_time,end_time,lambda);
                 
+                
+                % record all weights into one matrix
+                train_mTRF_attend_w_total(:,:,train_index) = w_train_mTRF_attend;
+                train_mTRF_attend_con_total(:,:,train_index) = con_train_mTRF_attend;
+                
+                train_mTRF_unattend_w_total(:,:,train_index) = w_train_mTRF_unattend;
+                train_mTRF_unattend_con_total(:,:,train_index) = con_train_mTRF_unattend;
+            end
+            
+            % test
+            for test_index = 1 : length(EEGBlock)
+                disp(strcat('Testing story',num2str(test_index),'...'));
+                train_index_select = setdiff(1 : length(EEGBlock),test_index);
+                
+                if  strcmpi('A',AttendTarget{test_index})
+                    Audio_attend_test = data_EEG_speakerA{test_index}(speaker_chn(chn),speaker_time_index);
+                    Audio_unattend_test = data_EEG_speakerB{test_index}(speaker_chn(chn),speaker_time_index);
+                else
+                    Audio_attend_test = data_EEG_speakerB{test_index}(speaker_chn(chn),speaker_time_index);
+                    Audio_unattend_test = data_EEG_speakerA{test_index}(speaker_chn(chn),speaker_time_index);
+                end
+                
+                 % test EEG
+                if strcmpi(Space(test_index),'left')
+                    EEG_test =  EEGBlock{test_index}(listener_chn,Listener_time_index);
+                else
+                    EEG_test = EEGBlock{test_index}(chn_re_index,:);
+                    EEG_test =  EEG_test(listener_chn,Listener_time_index);
+                end
+
                 % mean of weights
-                train_mTRF_attend_w_mean = mean(train_mTRF_attend_w_total,3);
-                train_mTRF_attend_con_mean = mean(train_mTRF_attend_con_total,3);
+                train_mTRF_attend_w_mean = mean(train_mTRF_attend_w_total(:,:,train_index_select),3);
+                train_mTRF_attend_con_mean = mean(train_mTRF_attend_con_total(:,:,train_index_select),3);
                 
-                train_mTRF_unattend_w_mean = mean(train_mTRF_unattend_w_total,3);
-                train_mTRF_unattend_con_mean = mean(train_mTRF_unattend_con_total,3);
+                train_mTRF_unattend_w_mean = mean(train_mTRF_unattend_w_total(:,:,train_index_select),3);
+                train_mTRF_unattend_con_mean = mean(train_mTRF_unattend_con_total(:,:,train_index_select),3);
                 
                 train_mTRF_attend_w_all_story_mean{test_index} = train_mTRF_attend_w_mean;
                 train_mTRF_unattend_w_all_story_mean{test_index} = train_mTRF_unattend_w_mean;
                 
-                % predict
-                disp(strcat('Testing story',num2str(test_index),'...'));
+                train_mTRF_attend_w_train_all_story{test_index}= train_mTRF_attend_w_total(:,:,train_index_select);
+                train_mTRF_unattend_w_train_all_story{test_index} = train_mTRF_attend_con_total(:,:,train_index_select);
                 
+                % predict
+
                 [recon_audio_attend_AttendDecoder,recon_AttendDecoder_attend_corr(test_index),p_recon_AttendDecoder_attend_corr(test_index),MSE_recon_AttendDecoder_attend_corr(test_index)] =...
                     mTRFpredict(Audio_attend_test',EEG_test',train_mTRF_attend_w_mean,Fs,-1,start_time,end_time,train_mTRF_attend_con_mean);
                 
@@ -304,51 +316,51 @@ for i = 11 : 20
                 
             end
             
-            
+            toc;
             %% timelag plot
-%             mkdir('timelag plot');
-%             cd('timelag plot');
-%             reconstruction accuracy plot attend
-%             figure('visible','off'); plot(mean(recon_AttendDecoder_attend_corr,2),'r');
-%             hold on; plot(mean(recon_AttendDecoder_unattend_corr,2),'b');
-%             xlabel('Subject No.'); ylabel('r value')
-%             saveName1 = strcat('Reconstruction Acc mTRF method S-L EEG attend decoder+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.jpg');
-%             saveName1 = strcat('Reconstruction Accuracy using mTRF method for attend decoder.jpg');
-%             title(saveName1(1:end-4));
-%             legend('Audio attend ','Audio not Attend')
-%             saveas(gcf,saveName1);
-%             close
-%             
-%             % reconstruction accuracy plot unattend
-%             figure('visible','off'); plot(mean(recon_UnattendDecoder_attend_corr,2),'r');
-%             hold on; plot(mean(recon_UnattendDecoder_unattend_corr,2),'b');
-%             xlabel('Subject No.'); ylabel('r value')
-%             saveName2 = strcat('Reconstruction Acc mTRF method S-L EEG unattend decoder+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.jpg');
-%             % saveName2 = strcat('Reconstruction Accuracy using mTRF method for unattend decoder.jpg');
-%             title(saveName2(1:end-4));
-%             legend('Audio attend ','Audio not Attend')
-%             saveas(gcf,saveName2);
-%             close
-%             
-%             % Decoding accuracy plot attend
+            %             mkdir('timelag plot');
+            %             cd('timelag plot');
+            %             reconstruction accuracy plot attend
+            %             figure('visible','off'); plot(mean(recon_AttendDecoder_attend_corr,2),'r');
+            %             hold on; plot(mean(recon_AttendDecoder_unattend_corr,2),'b');
+            %             xlabel('Subject No.'); ylabel('r value')
+            %             saveName1 = strcat('Reconstruction Acc mTRF method S-L EEG attend decoder+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.jpg');
+            %             saveName1 = strcat('Reconstruction Accuracy using mTRF method for attend decoder.jpg');
+            %             title(saveName1(1:end-4));
+            %             legend('Audio attend ','Audio not Attend')
+            %             saveas(gcf,saveName1);
+            %             close
+            %
+            %             % reconstruction accuracy plot unattend
+            %             figure('visible','off'); plot(mean(recon_UnattendDecoder_attend_corr,2),'r');
+            %             hold on; plot(mean(recon_UnattendDecoder_unattend_corr,2),'b');
+            %             xlabel('Subject No.'); ylabel('r value')
+            %             saveName2 = strcat('Reconstruction Acc mTRF method S-L EEG unattend decoder+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.jpg');
+            %             % saveName2 = strcat('Reconstruction Accuracy using mTRF method for unattend decoder.jpg');
+            %             title(saveName2(1:end-4));
+            %             legend('Audio attend ','Audio not Attend')
+            %             saveas(gcf,saveName2);
+            %             close
+            %
+            %             % Decoding accuracy plot attend
             Decoding_result_attend_decoder = recon_AttendDecoder_attend_corr-recon_AttendDecoder_unattend_corr;
             Individual_subjects_result_attend = sum(Decoding_result_attend_decoder>0)/length(EEGBlock);
             mean(Individual_subjects_result_attend)
             Decoding_result_unattend_decoder = recon_UnattendDecoder_unattend_corr-recon_UnattendDecoder_attend_corr;
             Individual_subjects_result_unattend = sum(Decoding_result_unattend_decoder>0)/length(EEGBlock);
             mean(Individual_subjects_result_unattend)
-%             figure('visible','off'); plot(Decoding_result_attend_decoder,'r');
-%             hold on; plot(Decoding_result_unattend_decoder,'b');
-%             xlabel('Subject No.'); ylabel('Difference');ylim([-0.2 0.2]);
-%             saveName3 = strcat('Decoding Acc mTRF method S-L EEG  attend and unattend decoder+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.jpg');
-%             % saveName3 = strcat('Decoding accuracy using mTRF method for attend and unattend decoder.jpg');
-%             title(saveName3(1:end-4))
-%             legend('Attend Decoder','Unattend Decoder')
-%             saveas(gcf,saveName3);
-%             close
-%             
-%             p = pwd;
-%             cd(p(1:end-(length('timelag plot')+1)));
+            %             figure('visible','off'); plot(Decoding_result_attend_decoder,'r');
+            %             hold on; plot(Decoding_result_unattend_decoder,'b');
+            %             xlabel('Subject No.'); ylabel('Difference');ylim([-0.2 0.2]);
+            %             saveName3 = strcat('Decoding Acc mTRF method S-L EEG  attend and unattend decoder+',label66{speaker_chn(chn)},'-timelag',num2str(timelag(j)),'ms',band_name,'.jpg');
+            %             % saveName3 = strcat('Decoding accuracy using mTRF method for attend and unattend decoder.jpg');
+            %             title(saveName3(1:end-4))
+            %             legend('Attend Decoder','Unattend Decoder')
+            %             saveas(gcf,saveName3);
+            %             close
+            %
+            %             p = pwd;
+            %             cd(p(1:end-(length('timelag plot')+1)));
             %             %% topoplot
             %
             %             mkdir('topoplot');
@@ -386,26 +398,26 @@ for i = 11 : 20
     saveName4 = strcat(file_name,'_Accuracy.mat');
     save(saveName4,'Acc_attend', 'Acc_unattend');
     
-    % imagesc plot
-    
-    timelag_plot = -250:750/10:500;
-    timelag_plot = timelag_plot(2:10);
-    figure;
-    set(gcf,'outerposition',get(0,'screensize'));
-    subplot(211);
-    imagesc(Acc_attend);colorbar;colormap('jet');
-    xlabel('timelag(ms)'); ylabel('channel');
-    set(gca, 'XTickLabel', timelag_plot);
-    title(strcat(file_name,'-Classification Acc for attend decoder'));
-    subplot(212);
-    imagesc(Acc_unattend);colorbar;colormap('jet');
-    xlabel('timelag(ms)'); ylabel('CCA rank');
-    set(gca, 'XTickLabel', timelag_plot);
-    title(strcat(file_name,'-Classification Acc for unattend decoder'));
-    
-    save_Name = strcat(file_name,'-Classification Acc.jpg');
-    saveas(gcf,save_Name);
-    close;
+%     % imagesc plot
+%     
+%     timelag_plot = -250:750/10:500;
+%     timelag_plot = timelag_plot(2:10);
+%     figure;
+%     set(gcf,'outerposition',get(0,'screensize'));
+%     subplot(211);
+%     imagesc(Acc_attend);colorbar;colormap('jet');
+%     xlabel('timelag(ms)'); ylabel('channel');
+%     set(gca, 'XTickLabel', timelag_plot);
+%     title(strcat(file_name,'-Classification Acc for attend decoder'));
+%     subplot(212);
+%     imagesc(Acc_unattend);colorbar;colormap('jet');
+%     xlabel('timelag(ms)'); ylabel('channel');
+%     set(gca, 'XTickLabel', timelag_plot);
+%     title(strcat(file_name,'-Classification Acc for unattend decoder'));
+%     
+%     save_Name = strcat(file_name,'-Classification Acc.jpg');
+%     saveas(gcf,save_Name);
+%     close;
     
     p = pwd;
     cd(p(1:end-(length(file_name)+1)));

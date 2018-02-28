@@ -6,10 +6,10 @@
 
 %% initial
 listener_chn= [1:32 34:42 44:59 61:63];
-% speaker_chn = [1:32 34:42 44:59 61:63];
+speaker_chn = [1:32 34:42 44:59 61:63];
 % speaker_chn = [17:21 26:30 36:40];
 % speaker_chn = 9:12;
-speaker_chn = [9:11 18:20 27:29];
+% speaker_chn = [9:11 18:20 27:29];
 load('E:\DataProcessing\label66.mat');
 layout = 'E:\DataProcessing\easycapm1.mat';
 
@@ -42,8 +42,8 @@ Decoding_acc_attend_ttest_result_all_listener  = zeros(listener_num,length(speak
 Decoding_acc_unattend_ttest_result_all_listener  = zeros(listener_num,length(speaker_chn),length(timelag));
 
 
-mkdir('broadband');
-cd('broadband');
+mkdir('alpha hilbert');
+cd('alpha hilbert');
 
 for i = 1 : listener_num
     
@@ -57,7 +57,7 @@ for i = 1 : listener_num
     mkdir(file_name);
     cd(file_name);
     
-    band_name = strcat(' 64Hz 2-8Hz speakerEEG mTRF Listener',file_name(end-2:end),' lambda',num2str(lambda),' 10-55s');
+    band_name = strcat(' 64Hz alpha hilbert speakerEEG mTRF Listener',file_name(end-2:end),' lambda',num2str(lambda),' 10-55s');
     
     
     for chn = 1:length(speaker_chn)
@@ -67,7 +67,7 @@ for i = 1 : listener_num
         
         %%  CCA speaker listener plot
         % p = pwd;
-        p =strcat('E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF_speaker\Listener-Speaker\broadband\',file_name);
+        p =strcat('E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF_speaker\Listener-Speaker\alpha hilbert\',file_name);
         % category = 'mTRF';
         category = chn_file_name;
         

@@ -16,21 +16,24 @@ listener_num = 20;
 
 % timelag = -200:25:500;
 Fs = 64;
-% timelag = -250:(1000/Fs):500;
-timelag = 0;
-lambda_para = 5;
+timelag = -250:(1000/Fs):500;
+% lambda_para = 16 : 20;
 
-for lambda_num = 1 : length(lambda_para)
-    lambda = 2^lambda_para(lambda_num);
+
+%% band name
+band_name = {'delta','theta','alpha','beta'};
+
+
+for band_select = 1 : length(band_name)
+    mkdir(band_name{band_select});
+    cd(band_name{band_select});
     
-    mkdir(strcat('lambda',num2str(lambda)));
-    cd(strcat('lambda',num2str(lambda)));
     % timelag = (-3000:500/32:3000)/(1000/Fs);
     % timelag = (-250:500/32:500)/(1000/Fs);
     % timelag= timelag(33:40);
     % timelag = (0:500/32:500)/(1000/Fs);
     
-    % lambda = 2^5;
+    lambda = 2^5;
     % bandName = strcat(' 64Hz 2-8Hz sound from EEG lambda',num2str(lambda),' 10-65s unattend only');
     % bandName = strcat(' 64Hz 2-8Hz lambda',num2str(lambda),' 10-55s');
     
@@ -69,22 +72,22 @@ for lambda_num = 1 : length(lambda_para)
             file_name = strcat('listener1',num2str(i));
         end
         
-        bandName = strcat(' 64Hztheta sound from wav l', file_name(2:end),' lambda',num2str(lambda),' 10-55s');
-        
+        bandName = strcat(' 64Hz',band_name{band_select},' sound from wav l', file_name(2:end),' lambda',num2str(lambda),' 10-55s');
+
         mkdir(file_name);
         cd(file_name);
         
         
         %%  mTRF plot
         % p = pwd;
-        p = 'E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\theta_125-250';
+        p = strcat('E:\DataProcessing\speaker-listener_experiment\Decoding Result\mTRF\',band_name{band_select});
         % category = 'mTRF';
         %     category = '64Hz 2-8Hz lambda32 10-55s';
         category =file_name;
         
         
-%         mkdir('topoplot');
-%         cd('topoplot');
+        mkdir('topoplot');
+        cd('topoplot');
         for  j = 1 : length(timelag)
             % load data
             datapath = strcat(p,'\',category);
@@ -112,54 +115,54 @@ for lambda_num = 1 : length(lambda_para)
             timelag_unattend_topoplot_listener_mean{j} = mean(train_mTRF_unattend_w_all_story_mean_mat,2);
             
             
-%             subplot(121);
-%             U_topoplot(abs(zscore(mean(train_mTRF_attend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(w_A(:,1));
-%             title('Attended decoder');
-%             subplot(122);
-%             U_topoplot(abs(zscore(mean(train_mTRF_unattend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(v_B(:,1));
-%             title('Unattended decoder');
-%             save_name = strcat(file_name,'-Mean Topoplot timelag ',num2str(timelag(j)),'ms.jpg');
-%             suptitle(save_name(1:end-4));
-%             saveas(gcf,save_name)
-%             close;
+            subplot(121);
+            U_topoplot(abs(zscore(mean(train_mTRF_attend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(w_A(:,1));
+            title('Attended decoder');
+            subplot(122);
+            U_topoplot(abs(zscore(mean(train_mTRF_unattend_w_all_story_mean_mat,2))),layout,label66(listener_chn));%plot(v_B(:,1));
+            title('Unattended decoder');
+            save_name = strcat(file_name,'-Mean Topoplot timelag ',num2str(timelag(j)),'ms.jpg');
+            suptitle(save_name(1:end-4));
+            saveas(gcf,save_name)
+            close;
             
         end
         
-%         p = pwd;
-%         cd(p(1:end-(length('topoplot')+1)));
+        p = pwd;
+        cd(p(1:end-(length('topoplot')+1)));
         
-%         %% timelag plot
-%         figure; plot(timelag,recon_AttendDecoder_attend_total,'r');
-%         hold on; plot(timelag,recon_AttendDecoder_unattend_total,'b');
-%         xlabel('Times(ms)');
-%         ylabel('r-value')
-%         saveName1 = strcat( 'Attended decoder Reconstruction-Acc across all time-lags using mTRF method',bandName,'.jpg');
-%         title(saveName1(1:end-4));
-%         legend('r Attended ','r unAttended','Location','northeast');
-%         % ylim([-0.03,0.03]);
-%         saveas(gcf,saveName1);
-%         close
-%         
-%         figure; plot(timelag,recon_UnattendDecoder_attend_total,'r');
-%         hold on; plot(timelag,recon_UnattendDecoder_unattend_total,'b');
-%         xlabel('Times(ms)');
-%         ylabel('r-value')
-%         saveName2 = strcat('Unattended decoder Reconstruction-Acc across timelags using mTRF method',bandName,'.jpg');
-%         title(saveName2(1:end-4));
-%         legend('r Attended ','r unAttended','Location','northeast');
-%         % ylim([-0.03,0.03]);
-%         saveas(gcf,saveName2);
-%         close
-%         
-%         figure; plot(timelag,decoding_acc_attended*100,'r');
-%         hold on; plot(timelag,decoding_acc_unattended*100,'b');
-%         xlabel('Times(ms)');
-%         ylabel('Decoding accuracy(%)')
-%         saveName3 =strcat('Decoding-Accuracy across timelags using mTRF method',bandName,'.jpg');
-%         title(saveName3(1:end-4));
-%         legend('Attended decoder','Unattended decoder','Location','northeast');ylim([30,100]);
-%         saveas(gcf,saveName3);
-%         close
+        %% timelag plot
+        figure; plot(timelag,recon_AttendDecoder_attend_total,'r');
+        hold on; plot(timelag,recon_AttendDecoder_unattend_total,'b');
+        xlabel('Times(ms)');
+        ylabel('r-value')
+        saveName1 = strcat( 'Attended decoder Reconstruction-Acc across all time-lags using mTRF method',bandName,'.jpg');
+        title(saveName1(1:end-4));
+        legend('r Attended ','r unAttended','Location','northeast');
+        % ylim([-0.03,0.03]);
+        saveas(gcf,saveName1);
+        close
+        
+        figure; plot(timelag,recon_UnattendDecoder_attend_total,'r');
+        hold on; plot(timelag,recon_UnattendDecoder_unattend_total,'b');
+        xlabel('Times(ms)');
+        ylabel('r-value')
+        saveName2 = strcat('Unattended decoder Reconstruction-Acc across timelags using mTRF method',bandName,'.jpg');
+        title(saveName2(1:end-4));
+        legend('r Attended ','r unAttended','Location','northeast');
+        % ylim([-0.03,0.03]);
+        saveas(gcf,saveName2);
+        close
+        
+        figure; plot(timelag,decoding_acc_attended*100,'r');
+        hold on; plot(timelag,decoding_acc_unattended*100,'b');
+        xlabel('Times(ms)');
+        ylabel('Decoding accuracy(%)')
+        saveName3 =strcat('Decoding-Accuracy across timelags using mTRF method',bandName,'.jpg');
+        title(saveName3(1:end-4));
+        legend('Attended decoder','Unattended decoder','Location','northeast');ylim([30,100]);
+        saveas(gcf,saveName3);
+        close
         
         recon_AttendDecoder_attend_total_all_listener(i,:) = recon_AttendDecoder_attend_total;
         recon_AttendDecoder_unattend_total_all_listener(i,:)  = recon_AttendDecoder_unattend_total;
@@ -198,7 +201,6 @@ for lambda_num = 1 : length(lambda_para)
         'Unattend_topoplot_listener_mean_all_listener');
     
     
-    p = pwd;
-    temp_data_path = strcat('lambda',num2str(lambda));
-    cd(p(1:end-(length(temp_data_path)+1)));
+     p = pwd;
+    cd(p(1:end-(length(band_name{band_select})+1)));
 end

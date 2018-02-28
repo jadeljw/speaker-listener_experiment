@@ -2,10 +2,13 @@
 
 %% initial topoplot
 listener_chn= [1:32 34:42 44:59 61:63];
+% speaker_chn = [2 5 10 28 40 50];
+% speaker_chn= 40;
+speaker_chn= [1:32 34:42 44:59 61:63];
 % speaker_chn = [17:21 26:30 36:40];
 % speaker_chn = [27:29];
 % speaker_chn = [27:30 36 38];
-speaker_chn = [9:11 18:20 27:29];
+% speaker_chn = [9:11 18:20 27:29];
 load('E:\DataProcessing\label66.mat');
 layout = 'E:\DataProcessing\easycapm1.mat';
 
@@ -56,7 +59,7 @@ for chn = 1:length(speaker_chn)
         %         bandName = strcat(' 64Hz 2-8Hz sound from wav l', file_name(2:end),' lambda',num2str(lambda),' 10-55s');
         
         %% load data
-        datapath = strcat('E:\DataProcessing\speaker-listener_experiment\Plot\timelag plot\mTRF_speaker\标签标错的其实算的都是前额的数据\broadband\',file_name,'\',chn_file_name);
+        datapath = strcat('E:\DataProcessing\speaker-listener_experiment\Plot\timelag plot\mTRF_speaker\broadband reverse\',file_name,'\',chn_file_name);
         dataName = strcat('mTRF_sound_EEG_result across timelags-',file_name,'-',label66{speaker_chn(chn)},'.mat');
         load(strcat(datapath,'\',dataName));
         
@@ -78,14 +81,14 @@ for chn = 1:length(speaker_chn)
     %% topoplot
         for  j = 1 : length(timelag)
     
-            attend_decoder_mean_weights = mean(squeeze(mean(Attend_topoplot_listener_mean_all_listener,1)));
-            unattend_decoder_mean_weights = mean(squeeze(mean(Unattend_topoplot_listener_mean_all_listener,1)));
+            attend_decoder_mean_weights = squeeze(mean(Attend_topoplot_listener_mean_all_listener,1));
+            unattend_decoder_mean_weights = squeeze(mean(Unattend_topoplot_listener_mean_all_listener,1));
     
             subplot(121);
-            U_topoplot(abs(zscore(attend_decoder_mean_weights')),layout,label66(listener_chn));%plot(w_A(:,1));
+            U_topoplot(abs(zscore(attend_decoder_mean_weights(j,:)')),layout,label66(listener_chn));%plot(w_A(:,1));
             title('Attended decoder');
             subplot(122);
-            U_topoplot(abs(zscore(unattend_decoder_mean_weights')),layout,label66(listener_chn));%plot(v_B(:,1));
+            U_topoplot(abs(zscore(unattend_decoder_mean_weights(j,:)')),layout,label66(listener_chn));%plot(v_B(:,1));
             title('Unattended decoder');
             save_name = strcat(chn_file_name,'-All listener-Mean Topoplot timelag ',num2str(timelag(j)),'ms.jpg');
             suptitle(save_name(1:end-4));

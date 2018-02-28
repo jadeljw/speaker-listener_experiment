@@ -40,7 +40,7 @@ dataFile_all = {'20171118-YJMQ','20171122-LTX','20171122-RT',...
     '20171216-HY','20171220-WM','20171221-ZC',...
     '20171221-LYB'};
 
-for i = 1 : 20
+for i = 12
     
     %% listener name
     if i < 10
@@ -87,13 +87,14 @@ for i = 1 : 20
 %     load(strcat('G:\Speaker-listener_experiment\listener\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
     % load(strcat('H:\Speaker-listener2017\data\',dataFile,'\CountBalanceTable_listener',dataName(1:3),'.mat'));
     % % load(strcat('E:\DataProcessing\speaker-listener_experiment\counterbalanceTable\CountBalanceTable_listener',dataName(1:3),'.mat'));
-    %
+    load(strcat('E:\DataProcessing\speaker-listener_experiment\CountBalanceTable\CountBalanceTable_listener',dataName(1:3),'.mat'));
+    
     %% timelag
     Fs = 64;
     % timelag = -250:500/32:500;
-    timelag = -250:(1000/Fs):500;
+%     timelag = -250:(1000/Fs):500;
     % timelag = timelag(33:49);
-%     timelag = 0;
+    timelag = 0;
     
     %% length
     EEG_time = 15 * Fs : 60 * Fs;
@@ -111,8 +112,8 @@ for i = 1 : 20
     for j = 1 : length(timelag)
         %% mTRF intitial
         
-        start_time = 0 + timelag(j);
-        end_time = 0 + timelag(j);
+        start_time = -250 + timelag(j);
+        end_time = 500 + timelag(j);
         % lambda = 1e5;
         
         %% mTRF matrix intial
@@ -328,22 +329,22 @@ for i = 1 : 20
         
         p = pwd;
         cd(p(1:end-(length('timelag plot')+1)));
-        %% topoplot
-        
-        mkdir('topoplot');
-        cd('topoplot');
-        subplot(121);
-        U_topoplot(abs(zscore(train_mTRF_attend_w_mean)),layout,label66(listener_chn));%plot(w_A(:,1));
-        title('Attended decoder');
-        subplot(122);
-        U_topoplot(abs(zscore(train_mTRF_unattend_w_mean)),layout,label66(listener_chn));%plot(v_B(:,1));
-        title('Unattended decoder');
-        save_name = strcat(file_name,'-Topoplot-timelag ',num2str(timelag(j)),'ms.jpg');
-        suptitle(save_name(1:end-4));
-        saveas(gcf,save_name)
-        close;
-        p = pwd;
-        cd(p(1:end-(length('topoplot')+1)));
+%% topoplot
+%         
+%         mkdir('topoplot');
+%         cd('topoplot');
+%         subplot(121);
+%         U_topoplot(abs(zscore(train_mTRF_attend_w_mean)),layout,label66(listener_chn));%plot(w_A(:,1));
+%         title('Attended decoder');
+%         subplot(122);
+%         U_topoplot(abs(zscore(train_mTRF_unattend_w_mean)),layout,label66(listener_chn));%plot(v_B(:,1));
+%         title('Unattended decoder');
+%         save_name = strcat(file_name,'-Topoplot-timelag ',num2str(timelag(j)),'ms.jpg');
+%         suptitle(save_name(1:end-4));
+%         saveas(gcf,save_name)
+%         close;
+%         p = pwd;
+%         cd(p(1:end-(length('topoplot')+1)));
         
         % save data
         saveName = strcat('mTRF_sound_EEG_result+',num2str(timelag(j)),'ms',band_name,'.mat');
