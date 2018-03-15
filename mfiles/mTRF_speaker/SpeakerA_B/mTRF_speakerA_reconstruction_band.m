@@ -11,7 +11,7 @@
 band_name = {'delta','theta','alpha','beta'};
 
 
-for band_select = 2 : length(band_name)
+for band_select = 1 : length(band_name)
     mkdir(band_name{band_select});
     cd(band_name{band_select});
     

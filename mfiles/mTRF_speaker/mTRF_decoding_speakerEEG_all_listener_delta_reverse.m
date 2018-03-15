@@ -10,11 +10,11 @@
 %% initial
 load('E:\DataProcessing\chn_re_index.mat');
 chn_re_index = chn_re_index(1:64);
-
 listener_chn= [1:32 34:42 44:59 61:63];
+speaker_chn =  [28 31 48 63];
 % speaker_chn = 5;
 % speaker_chn = [2 5 10 28 40 50];
-speaker_chn = [1:32 34:42 44:59 61:63];
+% speaker_chn = [1:32 34:42 44:59 61:63];
 % speaker_chn = [17:21 26:30 36:40];
 % speaker_chn = [9:11 18:20 27:29];
 load('E:\DataProcessing\label66.mat');
@@ -52,10 +52,10 @@ dataFile_all = {'20171118-YJMQ','20171122-LTX','20171122-RT',...
 
 
 
-mkdir('delta reverse');
-cd('delta reverse');
+mkdir('delta reverse lambda10');
+cd('delta reverse lambda10');
 
-for i = 1 : 13
+for i = 1 : 20
     
     %% listener name
     if i < 10
@@ -71,7 +71,7 @@ for i = 1 : 13
     
     
     %% band name
-    lambda = 2^5;
+    lambda = 2^10;
     band_name = strcat(' 64Hz delta speakerEEG mTRF Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
     
     %% CounterBalanceTable
@@ -104,9 +104,9 @@ for i = 1 : 13
     %% load speaker data
     
     % boradband
-    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker01-CFY-read_retell_valid.mat',...
+    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker01-CFY-read_retell_valid_strict.mat',...
         'data_speakerA_retell_delta_valid','data_speakerA_read_delta_valid');
-    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid.mat',...
+    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid_strict.mat',...
         'data_speakerB_retell_delta_valid','data_speakerB_read_delta_valid');
     
     

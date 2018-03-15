@@ -52,10 +52,10 @@ dataFile_all = {'20171118-YJMQ','20171122-LTX','20171122-RT',...
 
 
 
-mkdir('broadband reverse');
-cd('broadband reverse');
+mkdir('broadband reverse lambda15');
+cd('broadband reverse lambda15');
 
-for i = 14 : 20
+for i = 1 : 20
     
     %% listener name
     if i < 10
@@ -71,7 +71,7 @@ for i = 14 : 20
     
     
     %% band name
-    lambda = 2^5;
+    lambda = 2^15;
     band_name = strcat(' 64Hz broadband speakerEEG mTRF Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
     
     %% CounterBalanceTable
@@ -104,9 +104,9 @@ for i = 14 : 20
     %% load speaker data
     
     % boradband
-    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker01-CFY-read_retell_valid.mat',...
+    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker01-CFY-read_retell_valid_strict.mat',...
         'data_speakerA_retell_broadband_valid','data_speakerA_read_broadband_valid');
-    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid.mat',...
+    load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid_strict.mat',...
         'data_speakerB_retell_broadband_valid','data_speakerB_read_broadband_valid');
     
     

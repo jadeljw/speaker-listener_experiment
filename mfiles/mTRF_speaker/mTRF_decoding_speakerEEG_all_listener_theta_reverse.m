@@ -55,7 +55,7 @@ dataFile_all = {'20171118-YJMQ','20171122-LTX','20171122-RT',...
 mkdir('theta reverse');
 cd('theta reverse');
 
-for i = 14 : 20
+for i = 1 : 20
     
     %% listener name
     if i < 10

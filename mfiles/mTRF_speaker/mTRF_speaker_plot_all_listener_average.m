@@ -2,9 +2,10 @@
 
 %% initial topoplot
 listener_chn= [1:32 34:42 44:59 61:63];
+speaker_chn = [28 31 48 63];
 % speaker_chn = [2 5 10 28 40 50];
-% speaker_chn= 40;
-speaker_chn= [1:32 34:42 44:59 61:63];
+% speaker_chn= 61;
+% speaker_chn= [1:32 34:42 44:59 61:63];
 % speaker_chn = [17:21 26:30 36:40];
 % speaker_chn = [27:29];
 % speaker_chn = [27:30 36 38];
@@ -59,7 +60,7 @@ for chn = 1:length(speaker_chn)
         %         bandName = strcat(' 64Hz 2-8Hz sound from wav l', file_name(2:end),' lambda',num2str(lambda),' 10-55s');
         
         %% load data
-        datapath = strcat('E:\DataProcessing\speaker-listener_experiment\Plot\timelag plot\mTRF_speaker\broadband reverse\',file_name,'\',chn_file_name);
+        datapath = strcat('E:\DataProcessing\speaker-listener_experiment\Plot\timelag plot\mTRF_speaker\delta reverse lambda10\',file_name,'\',chn_file_name);
         dataName = strcat('mTRF_sound_EEG_result across timelags-',file_name,'-',label66{speaker_chn(chn)},'.mat');
         load(strcat(datapath,'\',dataName));
         
