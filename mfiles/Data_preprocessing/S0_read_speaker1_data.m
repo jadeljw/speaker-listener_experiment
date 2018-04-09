@@ -110,6 +110,13 @@ cfg.bpfilter = 'yes';
 cfg.bpfreq = [4 7];
 data_filtered_narrow_theta = ft_preprocessing(cfg,data_speaker1_reref);
 
+
+% 1-8Hz
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [1 8];
+data_filtered_1_8Hz = ft_preprocessing(cfg,data_speaker1_reref);
+
 %% resample to 64Hz
 cfg = [];
 cfg.resamplefs = 64;
@@ -141,6 +148,11 @@ cfg = [];
 cfg.resamplefs = 64;
 cfg.detrend    = 'no';
 data_filtered_narrow_theta = ft_resampledata(cfg, data_filtered_narrow_theta);
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_1_8Hz = ft_resampledata(cfg, data_filtered_1_8Hz);
 
 %% different type 
 % load('G:\Speaker-listener_experiment\speaker\20170619-CFY\data_preprocessing\Speaker01-CFY-resample_filter_64Hz.mat');
@@ -187,6 +199,14 @@ data_speakerA_read_narrow_theta = cell(1,23);
 
 data_speakerA_retell_narrow_theta(1:26) = data_filtered_narrow_theta.trial(1:26);
 data_speakerA_read_narrow_theta(1:23)  = data_filtered_narrow_theta.trial(27:end);
+
+
+% 1-8Hz
+data_speakerA_retell_1_8Hz = cell(1,26);
+data_speakerA_read_1_8Hz = cell(1,23);
+
+data_speakerA_retell_1_8Hz(1:26) = data_filtered_1_8Hz.trial(1:26);
+data_speakerA_read_1_8Hz(1:23)  = data_filtered_1_8Hz.trial(27:end);
 %% load data
 load('G:\Speaker-listener_experiment\speaker\20170619-CFY\data_preprocessing\Speaker01-CFY-read_retell.mat')
 load('G:\Speaker-listener_experiment\speaker\20170619-CFY\speaker01-recording-order.mat');
@@ -206,7 +226,8 @@ for i = 1 : length(read_repeat)
         data_speakerA_read_alpha_valid{read(i)} = data_speakerA_read_alpha{i};
         data_speakerA_read_beta_valid{read(i)} = data_speakerA_read_beta{i};
         data_speakerA_read_delta_valid{read(i)} = data_speakerA_read_delta{i};
-        data_speakerA_read_narrow_theta_valid{read(i)} = data_speakerA_read_narrow_theta{i};
+        data_speakerA_read_narrow_theta_valid{read(i)} = data_speakerA_read_narrow_theta{i}; 
+        data_speakerA_read_1_8Hz_valid{read(i)} = data_speakerA_read_1_8Hz{i};
     end
 end
 
@@ -216,8 +237,8 @@ data_speakerA_read_theta_valid{15}  = data_speakerA_read_theta{i+1};
 data_speakerA_read_alpha_valid{15} = data_speakerA_read_alpha{i+1};
 data_speakerA_read_beta_valid{15}  = data_speakerA_read_beta{i+1};
 data_speakerA_read_delta_valid{15} = data_speakerA_read_delta{i+1};
-data_speakerA_read_narrow_theta_valid{15} = data_speakerA_read_narrow_theta{i+1};
-
+data_speakerA_read_narrow_theta_valid{15} = data_speakerA_read_narrow_theta{i+1}; 
+data_speakerA_read_1_8Hz_valid{15} = data_speakerA_read_1_8Hz{i+1};
 %
 % retell valid
 for i = 1 : length(retell_repeat)
@@ -228,6 +249,7 @@ for i = 1 : length(retell_repeat)
         data_speakerA_retell_beta_valid{retell(i)} = data_speakerA_retell_beta{i};
         data_speakerA_retell_delta_valid{retell(i)} = data_speakerA_retell_delta{i};
         data_speakerA_retell_narrow_theta_valid{retell(i)} = data_speakerA_retell_narrow_theta{i};
+        data_speakerA_retell_1_8Hz_valid{retell(i)} = data_speakerA_retell_1_8Hz{i};
     end
 end
 
@@ -238,3 +260,4 @@ data_speakerA_retell_alpha_valid{15} = data_speakerA_retell_alpha{i+1};
 data_speakerA_retell_beta_valid{15}  = data_speakerA_retell_beta{i+1};
 data_speakerA_retell_delta_valid{15} = data_speakerA_retell_delta{i+1};
 data_speakerA_retell_narrow_theta_valid{15} = data_speakerA_retell_narrow_theta{i+1};
+data_speakerA_retell_1_8Hz_valid{15} = data_speakerA_retell_1_8Hz{i+1};

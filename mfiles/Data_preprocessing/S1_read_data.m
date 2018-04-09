@@ -123,6 +123,13 @@ cfg.bpfreq = [4 7];
 data_filtered_narrow_theta= ft_preprocessing(cfg,data_listener_reref);
 
 
+% 1-8Hz
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfreq = [1 8];
+data_filtered_1_8Hz= ft_preprocessing(cfg,data_listener_reref);
+
+
 %% resample to 64Hz
 cfg = [];
 cfg.resamplefs = 64;
@@ -155,6 +162,11 @@ cfg.resamplefs = 64;
 cfg.detrend    = 'no';
 data_filtered_narrow_theta = ft_resampledata(cfg, data_filtered_narrow_theta);
 
+
+cfg = [];
+cfg.resamplefs = 64;
+cfg.detrend    = 'no';
+data_filtered_1_8Hz = ft_resampledata(cfg, data_filtered_1_8Hz);
 %% view after bandpass result
 cfg = [];
 cfg.layout = 'easycapM1.lay'; % specify the layout file that should be used for plotting

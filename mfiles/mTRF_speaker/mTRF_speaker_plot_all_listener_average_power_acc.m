@@ -1,4 +1,5 @@
 % mTRF_plot_all_listener_average
+% using power data to discriminate
 
 %% initial topoplot
 listener_chn= [1:32 34:42 44:59 61:63];
@@ -66,10 +67,10 @@ for chn = 1:length(speaker_chn)
         
         
         %% record into one matrix
-        recon_AttendDecoder_attend_total_all_listener(i,:) = recon_AttendDecoder_attend_total;
-        recon_AttendDecoder_unattend_total_all_listener(i,:)  = recon_AttendDecoder_unattend_total;
-        recon_UnattendDecoder_attend_total_all_listener(i,:)  = recon_UnattendDecoder_attend_total;
-        recon_UnattendDecoder_unattend_total_all_listener(i,:)  = recon_UnattendDecoder_unattend_total;
+        recon_AttendDecoder_attend_total_all_listener(i,:) = power(recon_AttendDecoder_attend_total,2);
+        recon_AttendDecoder_unattend_total_all_listener(i,:)  = power(recon_AttendDecoder_unattend_total,2);
+        recon_UnattendDecoder_attend_total_all_listener(i,:)  = power(recon_UnattendDecoder_attend_total,2);
+        recon_UnattendDecoder_unattend_total_all_listener(i,:)  = power(recon_UnattendDecoder_unattend_total,2);
         decoding_acc_attended_all_listener(i,:) = decoding_acc_attended;
         decoding_acc_unattended_all_listener(i,:) = decoding_acc_unattended;
 %         decoding_acc_attended_abs_all_listener(i,:) = decoding_acc_attended_abs;
