@@ -7,7 +7,7 @@
 % on the flight from Hainan to Beijing
 
 %% band name
-band_name = {'delta','theta','alpha','beta','narrow_theta','1_8Hz'};
+band_name = {'delta','theta','alpha','beta'};
 
 mkdir('SpeakerB');
 cd('SpeakerB');
@@ -15,8 +15,8 @@ cd('SpeakerB');
 
 for band_select = 1 : length(band_name)
     disp(band_name{band_select});
-    %     mkdir(band_name{band_select});
-    %     cd(band_name{band_select});
+%     mkdir(band_name{band_select});
+%     cd(band_name{band_select});
     
     %% load speaker data
     load('E:\DataProcessing\speaker-listener_experiment\SpeakerData\Speaker02-FS-read_retell_valid_strict_1-8Hz.mat');
@@ -40,14 +40,18 @@ for band_select = 1 : length(band_name)
     Audio_B = [data_right(1:14) data_left(15:28)];
     
     %% band name
-    lambda = 2.^10;
+    lambda = 2.^(0:5:40);
     %     band_name = strcat(' 64Hz 2-8Hz sound from wav SpeakerB lambda',num2str(lambda),' 10-55s');
     bandName = strcat(' 64Hz',band_name{band_select},' sound from wav SpeakerB lambda',num2str(lambda),' 10-55s');
     
     %% timelag
     Fs = 64;
     timelag = 0;
-    timelag_for_plot = -250 : 1000/64 : 500;
+    timelag_for_plot = -1000 :1000/Fs: 1000; 
+%     timelag_gap = timelag(2)-timelag(1);
+%     timelag_interval = 9;
+%     timelag_length = timelag_gap * timelag_interval;
+%     timelag = timelag(1:timelag_interval:end);
     
     %% length
     EEG_time = 15 * Fs : 60 * Fs;
@@ -64,6 +68,7 @@ for band_select = 1 : length(band_name)
         
         % EEG
         EEG_test{jj} =  EEGBlock{jj}(chn_sel_index,EEG_time);
+%         EEG_test{jj} = EEG_test{jj}';
         EEG_test{jj} = zscore(EEG_test{jj}');
     end
     
@@ -74,22 +79,26 @@ for band_select = 1 : length(band_name)
     layout = 'E:\DataProcessing\easycapm1.mat';
     
     
-    
-    %% mTRF intitial
-    start_time = -250;
-    end_time = 500;
-    model = zeros(length(EEG_test),length(timelag_for_plot),length(chn_sel_index)); % story * time point * chn
-    
-    
-    for train_story = 1 : length(EEG_test)
+    for j = 1 : length(timelag)
+        disp(strcat('timelag',num2str(timelag(j))));
+        
+        %% mTRF intitial
+        
+        start_time = -3000 + timelag(j);
+        end_time = 3000 + timelag(j);
+        
+        
         %% mTRF train and test
-        model(train_story,:,:) = mTRFtrain(Audio_test{train_story},EEG_test{train_story},Fs,1,start_time,end_time,lambda);
+        [R,P,MSE,~,model,model_reshape] = mTRFcrossval_reshape(Audio_test,EEG_test,Fs,1,start_time,end_time,lambda);
+        
+        %% save data
+        saveName = strcat('mTRF_sound_SpeakerB_EEG_forward_result_',band_name{band_select},'.mat');
+        %     saveName = strcat('mTRF_sound_EEG_result.mat');
+        save(saveName,'R','P','MSE','model','model_reshape');
+        
     end
-  
-    %% save data
-    saveName = strcat('mTRF_sound_SpeakerB_EEG_forward_result_',band_name{band_select},'-lambda',num2str(lambda),'.mat');
-    %     saveName = strcat('mTRF_sound_EEG_result.mat');
-    save(saveName,'model');
     
+%     p = pwd;
+%     cd(p(1:end-(length(band_name{band_select})+1)));
     
 end

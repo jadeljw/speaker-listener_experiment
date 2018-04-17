@@ -5,8 +5,12 @@
 band_name = {'delta','theta','alpha','beta'};
 % band_name = {'narrow_theta'};
 
+lambda_index = 0:5:40;
+lambda_select = find(lambda_index ==10);
+
 for band_select = 1 : length(band_name)
-    band_file_name = strcat(band_name{band_select},' reverse');
+    %     band_file_name = strcat(band_name{band_select},' reverse');
+    band_file_name = strcat(band_name{band_select});
     
     %% initial
     load('E:\DataProcessing\chn_re_index.mat');
@@ -24,7 +28,8 @@ for band_select = 1 : length(band_name)
     
     %% timelag
     Fs = 64;
-    timelag_plot = -250:500/32:500;
+    %     timelag_plot = -250:500/32:500;
+    timelag_plot = -1000 :1000/Fs:1000;
     %     timelag = -250:(1000/Fs):500;
     % timelag = timelag(33:49);
     %     timelag = 0;
@@ -35,15 +40,16 @@ for band_select = 1 : length(band_name)
     lambda = 2 ^ 10;
     
     %% load plot data
-    data_name =  strcat('mTRF_sound_SpeakerB_EEG_forward_result_',band_name{band_select},'-lambda1024.mat');
-    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Forward model\Audio-speakerEEG\SpeakerB\');
+    %     data_name =  strcat('mTRF_sound_SpeakerB_EEG_forward_result_',band_name{band_select},'-lambda1024.mat');
+    data_name = strcat('mTRF_sound_SpeakerB_EEG_forward_result_',band_name{band_select});
+    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Forward model\Audio-speakerEEG\-1s-1s\SpeakerB');
     load(strcat(data_path,'\',data_name));
     
     %% record into matrix
     %             R_attend_mean(i,chn_speaker,:,:) = squeeze(mean(R_attend)); % listener * timelag * chn *time point
     %             R_unattend_mean(i,chn_speaker,:,:) = squeeze(mean(R_unattend));
     
-    model_attend_mean = model;
+    model_attend_mean = squeeze(model_reshape(:,lambda_select,:,timelag_index,:));
     model_attend_GFP = zeros(length(timelag_select));
     %     model_unattend_GFP= zeros(length(timelag_select));
     

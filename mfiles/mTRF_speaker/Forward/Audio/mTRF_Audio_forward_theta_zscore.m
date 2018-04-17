@@ -75,7 +75,7 @@ for i = 1 : 20
     
     
     %% band name
-    lambda = 2.^(0:5:20);
+    lambda = 2.^(0:5:40);
     %     band_name = strcat(' 64Hz theta speakerEEG mTRF Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
     
     %% CounterBalanceTable
@@ -86,11 +86,11 @@ for i = 1 : 20
     
     %% timelag
     Fs = 64;
-    timelag = -250:500/32:500;
-    timelag_gap = timelag(2)-timelag(1);
-    timelag_interval = 9;
-    timelag_length = timelag_gap * timelag_interval;
-    timelag = timelag(1:timelag_interval:end);
+    timelag = 0;
+%     timelag_gap = timelag(2)-timelag(1);
+%     timelag_interval = 9;
+    timelag_length = 6000;
+%     timelag = timelag(1:timelag_interval:end);
     %     timelag = -250:(1000/Fs):500;
     % timelag = timelag(33:49);
     %     timelag = 0;
@@ -157,19 +157,19 @@ for i = 1 : 20
         
         %% mTRF intitial
         
-        start_time = 0 + timelag(j);
-        end_time = timelag_length + timelag(j);
+        start_time = -3000 + timelag(j);
+        end_time = 3000 + timelag(j);
         
         
         %% mTRF train and test
-        [R_attend,P_attend,MSE_attend,~,model_attend] = mTRFcrossval(Audio_attend,Listener_EEG_test,Fs,1,start_time,end_time,lambda);
-        [R_unattend,P_unattend,MSE_unattend,~,model_unattend] = mTRFcrossval(Audio_unattend,Listener_EEG_test,Fs,1,start_time,end_time,lambda);
+        [R_attend,P_attend,MSE_attend,~,model_attend,model_reshape_attend] = mTRFcrossval_reshape(Audio_attend,Listener_EEG_test,Fs,1,start_time,end_time,lambda);
+        [R_unattend,P_unattend,MSE_unattend,~,model_unattend,model_reshape_unattend] = mTRFcrossval_reshape(Audio_unattend,Listener_EEG_test,Fs,1,start_time,end_time,lambda);
         
         %% save data
-        saveName = strcat('mTRF_Audio_listenerEEG_forward_result-timelag',num2str(timelag(j)),'ms.mat');
+        saveName = strcat('mTRF_Audio_listenerEEG_forward_result_theta.mat');
         %     saveName = strcat('mTRF_sound_EEG_result.mat');
-        save(saveName,'R_attend','P_attend','MSE_attend','model_attend',...
-            'R_unattend','P_unattend','MSE_unattend','model_unattend');
+        save(saveName,'R_attend','P_attend','MSE_attend','model_attend','model_reshape_attend',...
+            'R_unattend','P_unattend','MSE_unattend','model_unattend','model_reshape_unattend');
         
     end
     

@@ -1,10 +1,11 @@
 % mTRF_speakerEEG_plot_forward
 
-band_name = {'delta','theta','alpha','beta','broadband','1_8Hz'};
+% band_name = {'delta','theta','alpha','beta','broadband','1_8Hz'};
 % band_name = {'narrow_theta'};
+band_name = {'delta','theta','alpha'};
 
 for band_select = 1 : length(band_name)
-    band_file_name = strcat(band_name{band_select},' reverse');
+    band_file_name = strcat(band_name{band_select});
     mkdir(band_file_name);
     cd(band_file_name);
     
@@ -26,7 +27,7 @@ for band_select = 1 : length(band_name)
     
     %% timelag
     Fs = 64;
-    timelag_plot = -250:500/32:500;
+    timelag_plot = -3000 : 1000/Fs: 3000;
     %     timelag = -250:(1000/Fs):500;
     % timelag = timelag(33:49);
     %     timelag = 0;
@@ -55,16 +56,16 @@ for band_select = 1 : length(band_name)
             chn_file_name = strcat(num2str(chn_speaker),'-',label66{speaker_chn(chn_speaker)});
             disp(strcat(file_name,'-',chn_file_name));
             %% load plot data
-            data_name =  strcat('mTRF_speakerEEG_listenerEEG_forward_result+',label66{speaker_chn(chn_speaker)},'-lambda',num2str(lambda),'.mat');
-            data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Forward model\SpeakerEEG-listenerEEG\',band_name{band_select},' reverse zscore\',file_name);
+            data_name =  strcat('mTRF_speakerEEG_listenerEEG_forward_result+',label66{speaker_chn(chn_speaker)},'-',band_file_name,'.mat');
+            data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Forward model\SpeakerEEG-listenerEEG\-3s-3s\',band_name{band_select},'\',file_name);
             load(strcat(data_path,'\',data_name));
             
             %% record into matrix
             %             R_attend_mean(i,chn_speaker,:,:) = squeeze(mean(R_attend)); % listener * timelag * chn *time point
             %             R_unattend_mean(i,chn_speaker,:,:) = squeeze(mean(R_unattend));
             
-            model_attend_mean(i,chn_speaker,:,:) = squeeze(mean(model_attend(:,timelag_index,:)));
-            model_unattend_mean(i,chn_speaker,:,:) = squeeze(mean(model_unattend(:,timelag_index,:)));
+            model_attend_mean(i,chn_speaker,:,:) = mean(squeeze(model_reshape_attend));
+            model_unattend_mean(i,chn_speaker,:,:) = mean(squeeze(model_reshape_unattend));
             
         end
     end
