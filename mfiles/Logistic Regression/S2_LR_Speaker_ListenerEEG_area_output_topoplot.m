@@ -6,27 +6,21 @@
 % LJW
 % 2018.3.11
 
-% band_name = {'delta','theta','alpha','broadband'};
+% band_name = {'delta','theta','alpha'};
 % type = {'diff','total'};
 
-% band_name = {'broadband'};
-band_name  = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
-% band_name  = {'broadband','broadband_hilbert',...
-%     'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
-
+band_name = {'delta','theta','alpha'};
+% band_name = {'beta'};
 type = {'total'};
 listener_num = 20;
 story_num = 28;
 
 % range_for_band = [0.1 0.11 0.11 0.13]; % 99%
-% range_for_band = [0.09 0.08 0.09 0.09]; % 95%
+range_for_band = [0.09 0.08 0.09 0.09]; % 95%
 % range_for_band = [0.08 0.07 0.08 0.08]; % 90%
-range_for_band = [0.07 0.07 0.07 0.07]; % surrogate
 %%
-mkdir('Speaker ListenerEEG zscore individual');
-cd('Speaker ListenerEEG zscore individual');
-
+mkdir('Speaker ListenerEEG zscore');
+cd('Speaker ListenerEEG zscore');
 %% new order
 load('E:\DataProcessing\Label_and_area.mat');
 
@@ -129,13 +123,10 @@ for band_select = 1 : length(band_name)
                     %                         band_file_name,'\',file_name,'\',chn_file_name,'\mTRF_speakerEEG_listenerEEG_result+',label66{speaker_chn(chn)},...
                     %                         '-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat'));
                     data_name = strcat('mTRF_speakerEEG_listenerEEG_result-',chn_area_labels{chn_area_select},'-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
-                    %                     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\4-surrogate\Speaker ListenerEEG zscore surrogate2\',...
-                    %                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
-                    
-%                     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\Speaker ListenerEEG_area zscore\',...
+%                     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\4-surrogate\Speaker ListenerEEG zscore surrogate2\',...
 %                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
                     
-                    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Speaker-listenerEEG\raw r value\',...
+                    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\Speaker ListenerEEG_area zscore\',...
                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
                     
                     load(strcat(data_path,data_name));
@@ -169,11 +160,11 @@ for band_select = 1 : length(band_name)
                     if glm.Rsquared.Adjusted == 1
                         %                 plot(r_value_mat,'*','LineWidth',2);
                         imagesc(r_value_mat);colorbar;
-                        data_name = strcat(file_name,'+',num2str(timelag(time_point)),'ms.jpg');
+                        data_name = strcat(file_name(2:end),'+',num2str(timelag(time_point)),'ms.jpg');
                         title(data_name(1:end-4));
-                        xticks(1:4);
-                        xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
-%                         xticklabels({'Attend','Unattend'});
+                        xticks(1:2);
+                        %                 xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
+                        xticklabels({'Attend','Unattend'});
                         saveas(gcf,data_name);
                         close
                     end
@@ -189,65 +180,63 @@ for band_select = 1 : length(band_name)
                 disp(strcat('R squared:',num2str(r_time_point_average)));
                 disp('********************');
                 
-%                 if abs(r_time_point_average) > range_for_band(band_select)
-%                     % r_mat save
-%                     R_squared_glm = r_time_point_average;
-%                     save_name2 = strcat('mTRF_speakerEEG_listenerEEG_result-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
-%                     save(save_name2,'r_value_mat_total','R_squared_glm','attend_target_total','R_squared_time_point');
-%                     %
-%                     %                     % topoplot
-%                     %
-%                     %                     set(gcf,'outerposition',get(0,'screensize'));
-%                     %
-%                     %                     % attend
-%                     %                     subplot(121);
-%                     %                     U_topoplot(abs(mean(weights_attend_mat,1)'),layout,label66(listener_chn));colorbar('location','EastOutside');
-%                     %                     title('Attended');
-%                     %
-%                     %
-%                     %                     % unattend
-%                     %                     subplot(122);
-%                     %                     U_topoplot(abs(mean(weights_unattend_mat,1)'),layout,label66(listener_chn));colorbar('location','EastOutside');
-%                     %                     title('Unattended');
-%                     %
-%                     %                     save_name = strcat('mTRF-speakerEEG-listenerEEG-result-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.jpg');
-%                     %                     suptitle(save_name(1:end-4));
-%                     %                     saveas(gcf,save_name);
-%                     %
-%                     %                     close;
+                if abs(r_time_point_average) > range_for_band(band_select)
+                    % r_mat save
+                    R_squared_glm = r_time_point_average;
+                    save_name2 = strcat('mTRF_speakerEEG_listenerEEG_result-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
+                    save(save_name2,'r_value_mat_total','R_squared_glm','attend_target_total','R_squared_time_point');
+                    %
+%                     % topoplot
 %                     
-%                 end
+%                     set(gcf,'outerposition',get(0,'screensize'));
+%                     
+%                     % attend
+%                     subplot(121);
+%                     U_topoplot(abs(mean(weights_attend_mat,1)'),layout,label66(listener_chn));colorbar('location','EastOutside');
+%                     title('Attended');
+%                     
+%                     
+%                     % unattend
+%                     subplot(122);
+%                     U_topoplot(abs(mean(weights_unattend_mat,1)'),layout,label66(listener_chn));colorbar('location','EastOutside');
+%                     title('Unattended');
+%                     
+%                     save_name = strcat('mTRF-speakerEEG-listenerEEG-result-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.jpg');
+%                     suptitle(save_name(1:end-4));
+%                     saveas(gcf,save_name);
+%                     
+%                     close;
+                    
+                end
                 %
                 
             end
             
             
             %% plot
-            % imagesc
-            set(gcf,'outerposition',get(0,'screensize'));
-            imagesc(R_squared_mat);colorbar;
-            caxis([-0.1 0.5]);
-            %     colormap('jet');
-            xticks(label_select);
-            xticklabels(timelag(label_select));
-            
-            save_name = strcat('Speaker ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-imagesc-',type{type_select},'.jpg');
-            title(save_name(1:end-4));
-            saveas(gcf,save_name);
-            close
+            %                         % imagesc
+            %                         set(gcf,'outerposition',get(0,'screensize'));
+            %                         imagesc(R_squared_mat);colorbar;
+            %                         %     colormap('jet');
+            %                         xticks(label_select);
+            %                         xticklabels(timelag(label_select));
             %
-            % plot mean result
-            set(gcf,'outerposition',get(0,'screensize'));
-            plot(timelag,mean(R_squared_mat),'LineWidth',2);
-%             ylim([0 0.15]);
-            save_name1 = strcat('Speaker ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-mean-',type{type_select},'.jpg');
-            title(save_name1(1:end-4));
-            saveas(gcf,save_name1);
-            close
-            %
-            % save data
-            save_name2 = strcat('Speaker ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-',type{type_select},'-',select_area,'.mat');
-            save(save_name2,'R_squared_mat');
+            %                         save_name = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-imagesc-',type{type_select},'.jpg');
+            %                         title(save_name(1:end-4));
+            %                         saveas(gcf,save_name);
+            %                         close
+            %                         %
+            %                         % plot mean result
+            %                         set(gcf,'outerposition',get(0,'screensize'));
+            %                         plot(timelag,mean(R_squared_mat),'LineWidth',2);
+            %                         save_name1 = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-mean-',type{type_select},'.jpg');
+            %                         title(save_name1(1:end-4));
+            %                         saveas(gcf,save_name1);
+            %                         close
+            %                         %
+            %                         % save data
+            %                         save_name2 = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-',type{type_select},'-',select_area,'.mat');
+            %                         save(save_name2,'R_squared_mat');
             
             % record into mat
             R_squared_mat_speaker(chn_area_select,:) = mean(R_squared_mat);
@@ -270,29 +259,29 @@ for band_select = 1 : length(band_name)
         yticklabels(chn_area_labels);
         xlabel('timelag(ms)');
         ylabel('Speaker Channels');
-        save_name = strcat('Speaker ListenerEEG Logstic Regresssion Large r^2 Result-total-',band_name{band_select},'-imagesc-',type{type_select},'-',select_area,'.jpg');
+        save_name = strcat('Audio ListenerEEG Logstic Regresssion Large r^2 Result-total-',band_name{band_select},'-imagesc-',type{type_select},'-',select_area,'.jpg');
         title(save_name(1:end-4));
         saveas(gcf,save_name);
         close
         
-%         % imagesc2
-%         set(gcf,'outerposition',get(0,'screensize'));
-%         imagesc(R_squared_mat_speaker>range_for_band(band_select));colorbar;
-%         %         caxis([-0.04 0.1]);
-%         %     colormap('jet');
-%         xticks(label_select);
-%         xticklabels(timelag(label_select));
-%         yticks(1:length(chn_area_labels));
-%         yticklabels(chn_area_labels);
-%         xlabel('timelag(ms)');
-%         ylabel('Speaker Channels');
-%         save_name = strcat('Audio ListenerEEG Logstic Regresssion Large r^2 Result-Large-',band_name{band_select},'-imagesc-',type{type_select},'-',select_area,'.jpg');
-%         title(save_name(1:end-4));
-%         saveas(gcf,save_name);
-%         close
+        % imagesc2
+        set(gcf,'outerposition',get(0,'screensize'));
+        imagesc(R_squared_mat_speaker>range_for_band(band_select));colorbar;
+        %         caxis([-0.04 0.1]);
+        %     colormap('jet');
+        xticks(label_select);
+        xticklabels(timelag(label_select));
+        yticks(1:length(chn_area_labels));
+        yticklabels(chn_area_labels);
+        xlabel('timelag(ms)');
+        ylabel('Speaker Channels');
+        save_name = strcat('Audio ListenerEEG Logstic Regresssion Large r^2 Result-Large-',band_name{band_select},'-imagesc-',type{type_select},'-',select_area,'.jpg');
+        title(save_name(1:end-4));
+        saveas(gcf,save_name);
+        close
         
         % save data
-        save_name = strcat('Speaker ListenerEEG Logstic Regresssion r^2 Result-total-',band_name{band_select},'-',type{type_select},'-',select_area,'.mat');
+        save_name = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-total-',band_name{band_select},'-',type{type_select},'-',select_area,'.mat');
         save(save_name,'R_squared_mat_speaker');
         %
         p = pwd;

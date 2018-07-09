@@ -68,7 +68,7 @@ story_num = 28;
 surrogate_num = 10;
 
 
-for surrogate_select = 1 : surrogate_num
+for surrogate_select = 7 : surrogate_num
     %% shuffle order
     [Shuffle_speaker,Shuffle_listener]=U_Shuffle_for_surrogate(1:story_num,1:story_num);
     

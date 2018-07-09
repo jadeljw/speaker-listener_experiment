@@ -9,10 +9,7 @@
 % band_name = {'delta','theta','alpha'};
 % type = {'diff','total'};
 
-% band_name = {'delta','theta','alpha'};
-band_name =  {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
-
+band_name = {'delta','theta','alpha'};
 % band_name = {'beta'};
 type = {'total'};
 listener_num = 20;
@@ -133,8 +130,7 @@ for band_select = 1 : length(band_name)
                         %                         band_file_name,'\',file_name,'\',chn_file_name,'\mTRF_speakerEEG_listenerEEG_result+',label66{speaker_chn(chn)},...
                         %                         '-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat'));
                         data_name = strcat('mTRF_speakerEEG_listenerEEG_result-',chn_area_labels{chn_area_select},'-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
-                        
-                        data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\4-surrogate\Speaker ListenerEEG zscore surrogate,',num2str(surrogate_order),'\',...
+                        data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\4-surrogate\Speaker ListenerEEG zscore surrogate2\',...
                             band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
                         
                         %                     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\Speaker ListenerEEG_area zscore\',...

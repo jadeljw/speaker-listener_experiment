@@ -1,10 +1,11 @@
-% adapted from mTRF_decoding_sound_from_wav_keep_order_all_listener.m date:
-% 2018.4.17 author: LJW purpose: to calculate r value using attend decoder
-% and unattend decoder Attend target A ->1 Attend target B ->0
+% adapted from mTRF_decoding_sound_from_wav_keep_order_all_listener.m
+% date: 2018.4.17
+% author: LJW
+% purpose: to calculate r value using attend decoder and unattend decoder
+% Attend target A ->1
+% Attend target B ->0
 
-band_name = {'theta'};
-% band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+band_name = {'delta','theta','alpha'};
 
 
 for band_select = 1 : length(band_name)
@@ -13,9 +14,6 @@ for band_select = 1 : length(band_name)
     cd(band_file_name);
     
     %% initial
-    load('E:\DataProcessing\chn_re_index.mat');
-    chn_re_index = chn_re_index(1:64);
-    
     listener_chn= [1:32 34:42 44:59 61:63];
     load('E:\DataProcessing\label66.mat');
     layout = 'E:\DataProcessing\easycapm1.mat';
@@ -70,14 +68,10 @@ for band_select = 1 : length(band_name)
         bandName = strcat(' 64Hz 2-8Hz sound from wav Listener',dataName(1:3),' lambda',num2str(lambda),' 10-55s');
         
         %% load sound data from wav
-        % %
-        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
-        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from
-        % wav\Listener01_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
-        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from
-        % wav\Listener0_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
-        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from
-        % wav\Listener101_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+        % % load('E:\DataProcessing\speaker-listener_experiment\AudioData\Audio_envelope_64Hz_hilbert_cell.mat');
+        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener01_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener0_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
+        % load('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener101_Audio_envelope_hilbert_first_64Hz_keep_order.mat');
         load(strcat('E:\DataProcessing\speaker-listener_experiment\AudioData\from wav\Listener',dataName(1:3),'_Audio_envelope_hilbert_first_64Hz_keep_order.mat'));
         
         
@@ -85,7 +79,7 @@ for band_select = 1 : length(band_name)
         % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref-64Hz.mat');
         % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\01-CYX-Listener-ICA-filter-reref-64Hz.mat')
         data_name_temp = strcat('data_filtered_',band_name{band_select});
-        load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'_new.mat'),data_name_temp);
+        load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),data_name_temp);
         
         
         % combine
@@ -112,8 +106,7 @@ for band_select = 1 : length(band_name)
         %     timelag = 0;
         
         %% length
-        %         EEG_time = 15 * Fs : 60 * Fs;
-        Listener_time_index = 15 * Fs : 60 * Fs;
+        EEG_time = 15 * Fs : 60 * Fs;
         Audio_time = 10 * Fs : 55 * Fs;
         
         
@@ -157,9 +150,8 @@ for band_select = 1 : length(band_name)
             
             
             %% mTRF train
-            data_left = data_left_theta;
-            data_right = data_right_theta;
-            
+            data_left = eval(strcat('data_left_',band_name{band_select}));
+            data_right = eval(strcat('data_right_',band_name{band_select}));
             for train_index = 1 : length(EEGBlock)
                 
                 % train story
@@ -171,26 +163,15 @@ for band_select = 1 : length(band_name)
                     Audio_unattend_train = data_left{train_index}(Audio_time)';
                 end
                 
-                Audio_attend_train = zscore(Audio_attend_train);
-                Audio_unattend_train = zscore(Audio_unattend_train);
                 
-                
-                % train EEG
-                if strcmpi(Space(train_index),'left')
-                    EEG_train =  EEGBlock{train_index}(listener_chn,Listener_time_index);
-                    EEG_train = zscore(EEG_train');
-                else
-                    EEG_train = EEGBlock{train_index}(chn_re_index,:);
-                    EEG_train =  EEG_train(listener_chn,Listener_time_index);
-                    EEG_train = zscore(EEG_train');
-                end
-                
+                % EEG
+                EEG_train =  EEGBlock{train_index}(chn_sel_index,EEG_time);
                 disp(strcat('Training story',num2str(train_index),'...'));
                 
                 
                 %train process
-                [w_train_mTRF_attend,t_train_mTRF_attend,con_train_mTRF_attend] = mTRFtrain(Audio_attend_train',EEG_train,Fs,-1,start_time,end_time,lambda);
-                [w_train_mTRF_unattend,t_train_mTRF_unattend,con_train_mTRF_unattend] = mTRFtrain(Audio_unattend_train',EEG_train,Fs,-1,start_time,end_time,lambda);
+                [w_train_mTRF_attend,t_train_mTRF_attend,con_train_mTRF_attend] = mTRFtrain(Audio_attend_train',EEG_train',Fs,-1,start_time,end_time,lambda);
+                [w_train_mTRF_unattend,t_train_mTRF_unattend,con_train_mTRF_unattend] = mTRFtrain(Audio_unattend_train',EEG_train',Fs,-1,start_time,end_time,lambda);
                 
                 
                 % record all weights into one matrix
@@ -200,10 +181,8 @@ for band_select = 1 : length(band_name)
                 train_mTRF_unattend_w_total(:,:,train_index) = w_train_mTRF_unattend;
                 train_mTRF_unattend_con_total(:,:,train_index) = con_train_mTRF_unattend;
                 
-                %                 train_mTRF_attend_w_train_all_story{train_index}=
-                %                 train_mTRF_attend_w_total;
-                %                 train_mTRF_unattend_w_train_all_story{train_index}
-                %                 = train_mTRF_unattend_w_total;
+                %                 train_mTRF_attend_w_train_all_story{train_index}= train_mTRF_attend_w_total;
+                %                 train_mTRF_unattend_w_train_all_story{train_index} = train_mTRF_unattend_w_total;
                 
             end
             
@@ -231,49 +210,35 @@ for band_select = 1 : length(band_name)
                     Audio_unattend_test = data_left{test_index}(Audio_time)';
                 end
                 
-                Audio_attend_test = zscore(Audio_attend_test);
-                Audio_unattend_test = zscore(Audio_unattend_test);
-                
-                
-                % test EEG
-                if strcmpi(Space(test_index),'left')
-                    EEG_test =  EEGBlock{test_index}(listener_chn,Listener_time_index);
-                    EEG_test = zscore(EEG_test');
-                else
-                    EEG_test = EEGBlock{test_index}(chn_re_index,:);
-                    EEG_test =  EEG_test(listener_chn,Listener_time_index);
-                    EEG_test = zscore(EEG_test');
-                end
+                % EEG
+                EEG_test =  EEGBlock{test_index}(chn_sel_index,EEG_time);
                 
                 % predict
                 disp(strcat('Testing story',num2str(test_index),'...'));
                 
                 [~,recon_AttendDecoder_AudioA_corr(test_index),p_recon_AttendDecoder_AudioA_corr(test_index),MSE_recon_AttendDecoder_AudioA_corr(test_index)] =...
-                    mTRFpredict(Audio_attend_test',EEG_test,train_mTRF_attend_w_mean,Fs,-1,start_time,end_time,train_mTRF_attend_con_mean);
+                    mTRFpredict(Audio_attend_test',EEG_test',train_mTRF_attend_w_mean,Fs,-1,start_time,end_time,train_mTRF_attend_con_mean);
                 
                 [~,recon_AttendDecoder_AudioB_corr(test_index),p_recon_AttendDecoder_AudioB_corr(test_index),MSE_recon_AttendDecoder_AudioB_corr(test_index)] =...
-                    mTRFpredict(Audio_unattend_test',EEG_test,train_mTRF_attend_w_mean,Fs,-1,start_time,end_time,train_mTRF_attend_con_mean);
+                    mTRFpredict(Audio_unattend_test',EEG_test',train_mTRF_attend_w_mean,Fs,-1,start_time,end_time,train_mTRF_attend_con_mean);
                 
                 [~,recon_UnattendDecoder_AudioB_corr(test_index),p_recon_UnattendDecoder_AudioB_corr(test_index),MSE_recon_UnattendDecoder_AudioB_corr(test_index)] =...
-                    mTRFpredict(Audio_unattend_test',EEG_test,train_mTRF_unattend_w_mean,Fs,-1,start_time,end_time,train_mTRF_unattend_con_mean);
+                    mTRFpredict(Audio_unattend_test',EEG_test',train_mTRF_unattend_w_mean,Fs,-1,start_time,end_time,train_mTRF_unattend_con_mean);
                 
                 [~,recon_UnattendDecoder_AudioA_corr(test_index),p_recon_UnattendDecoder_AudioA_corr(test_index),MSE_recon_UnattendDecoder_AudioA_corr(test_index)] =...
-                    mTRFpredict(Audio_attend_test',EEG_test,train_mTRF_unattend_w_mean,Fs,-1,start_time,end_time,train_mTRF_unattend_con_mean);
+                    mTRFpredict(Audio_attend_test',EEG_test',train_mTRF_unattend_w_mean,Fs,-1,start_time,end_time,train_mTRF_unattend_con_mean);
                 
             end
             
             %% save data
             
             % save data
-            %             saveName =
-            %             strcat('mTRF_sound_EEG_result+',num2str(timelag(j)),'ms',bandName,'.mat');
-            saveName = strcat('mTRF_Audio_listenerEEG_result-timelag',num2str(timelag(j)),'ms-',band_file_name,'.mat');
-            
+            saveName = strcat('mTRF_sound_EEG_result+',num2str(timelag(j)),'ms',bandName,'.mat');
             %     saveName = strcat('mTRF_sound_EEG_result.mat');
             save(saveName,'recon_AttendDecoder_AudioA_corr','recon_UnattendDecoder_AudioA_corr' ,'recon_AttendDecoder_AudioB_corr','recon_UnattendDecoder_AudioB_corr',...
                 'p_recon_AttendDecoder_AudioA_corr','p_recon_UnattendDecoder_AudioA_corr', 'p_recon_AttendDecoder_AudioB_corr','p_recon_UnattendDecoder_AudioB_corr',...
                 'MSE_recon_AttendDecoder_AudioA_corr','MSE_recon_UnattendDecoder_AudioA_corr','MSE_recon_AttendDecoder_AudioB_corr','MSE_recon_UnattendDecoder_AudioB_corr',...
-                'train_mTRF_attend_w_total','train_mTRF_unattend_w_total',...
+                'train_mTRF_attend_w_all_story_mean','train_mTRF_unattend_w_all_story_mean',...
                 'attend_target_num');
         end
         
