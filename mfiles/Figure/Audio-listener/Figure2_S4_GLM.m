@@ -3,8 +3,8 @@
 % LJW
 % 2018.5.16
 % calculating the correlation between R^2 and behavioral result
-mkdir('GLM surrogate');
-cd('GLM surrogate');
+mkdir('GLM');
+cd('GLM');
 
 %% load behavioral result
 load('E:\DataProcessing\speaker-listener_experiment\Behavioral Result\Behavioral_result_new.mat');
@@ -13,6 +13,7 @@ Behavioral_result_label = fieldnames(Behavioral_result);
 %% initial
 band_name =  {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+
 listener_num = 20;
 story_num = 28;
 r_num = 4;
@@ -50,7 +51,7 @@ for band_select = 1 : length(band_name)
     
     %   data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Speaker-listenerEEG\raw r value\',...
 %                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
-    load(strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-raw r value mat\Speaker-listenerEEG\',band_file_name,'\Correlation_mat.mat'));
+    load(strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-raw r value mat\Audio-listenerEEG\',band_file_name,'\Correlation_mat.mat'));
     raw_r_label = fieldnames(Correlation_mat);
 
 
@@ -63,30 +64,28 @@ for band_select = 1 : length(band_name)
     %% intial mat
     for i = 1: length(Behavioral_result_label)
         temp_name_R = strcat('GLM_Rsquared_mat.',Behavioral_result_label{i});
-        eval(strcat(temp_name_R,'=zeros(length(chn_area_labels),length(timelag));'));
+        eval(strcat(temp_name_R,'=zeros(1,length(timelag));'));
         
         temp_name_p = strcat('GLM_Rsquared_mat_estimate.',Behavioral_result_label{i});
-        eval(strcat(temp_name_p,'=zeros(length(chn_area_labels),length(timelag),length(raw_r_label)+1);'));
+        eval(strcat(temp_name_p,'=zeros(1,length(timelag),length(raw_r_label)+1);'));
     end
     
     
     %% GLM
     
     for i = 1: length(Behavioral_result_label)
-        mkdir(Behavioral_result_label{i});
-        cd(Behavioral_result_label{i});
+%         mkdir(Behavioral_result_label{i});
+%         cd(Behavioral_result_label{i});
         disp(Behavioral_result_label{i});
         
-        for x_ind = 1 : length(chn_area_labels)
+%         for x_ind = 1 : length(chn_area_labels)
             % combine r value
             for y_ind = 1:length(timelag)
-                
-
                 
                 r_value_mat_GLM = zeros(length(listener_select_index),r_num);
                 
                 for raw_r_select  = 1 : length(raw_r_label)
-                    r_mat_data = eval(strcat('mean(Correlation_mat.',raw_r_label{raw_r_select},'(x_ind,listener_select_index,:,y_ind),3)'));
+                    r_mat_data = eval(strcat('mean(Correlation_mat.',raw_r_label{raw_r_select},'(listener_select_index,:,y_ind),2)'));
                     r_value_mat_GLM(:,raw_r_select) = r_mat_data;
                 end
                 
@@ -104,7 +103,7 @@ for band_select = 1 : length(band_name)
                 
                 % record into mat
                 % r squared
-                formula_left = strcat('GLM_Rsquared_mat.',Behavioral_result_label{i},'(x_ind,y_ind)');
+                formula_left = strcat('GLM_Rsquared_mat.',Behavioral_result_label{i},'(1,y_ind)');
                 eval(strcat(formula_left,'= glm.Rsquared.Adjusted;'));
                 
 %                 if glm.Rsquared.Adjusted > 0.4
@@ -137,7 +136,7 @@ for band_select = 1 : length(band_name)
 %                 end
                 
                 % estimate
-                formula_left = strcat('GLM_Rsquared_mat_estimate.',Behavioral_result_label{i},'(x_ind,y_ind,:)');
+                formula_left = strcat('GLM_Rsquared_mat_estimate.',Behavioral_result_label{i},'(1,y_ind,:)');
                 eval(strcat(formula_left,'= glm.Coefficients.Estimate;'));
                 
                 
@@ -150,9 +149,9 @@ for band_select = 1 : length(band_name)
             
 
             
-        end
-        p = pwd;
-        cd(p(1:end-(length(Behavioral_result_label{i})+1)));
+%         end
+%         p = pwd;
+%         cd(p(1:end-(length(Behavioral_result_label{i})+1)));
     end
     
     
@@ -162,15 +161,15 @@ for band_select = 1 : length(band_name)
         % imagesc
         set(gcf,'outerposition',get(0,'screensize'));
         %         imagesc(R_squared_mat_speaker>range_for_band(band_select));colorbar;
-        imagesc(eval(mat_temp_name));colorbar;
-        caxis([-0.5 0.5]);
+        plot(timelag,eval(mat_temp_name),'k','lineWidth',2);
+%         xlim([-0.5 0.5]);
         %         colormap('jet');
-        xticks(label_select);
-        xticklabels(timelag(label_select));
-        yticks(1:length(chn_area_labels));
-        yticklabels(chn_area_labels);
+%         xticks(label_select);
+%         xticklabels(timelag(label_select));
+%         yticks(1:length(chn_area_labels));
+%         yticklabels(chn_area_labels);
         xlabel('timelag(ms)');
-        ylabel('Speaker Channels');
+        ylabel('r^2 value');
         save_name = strcat('GLM Rsquared-',Behavioral_result_label{i},'-',band_name{band_select},'.jpg');
         title(save_name(1:end-4));
         saveas(gcf,save_name);
