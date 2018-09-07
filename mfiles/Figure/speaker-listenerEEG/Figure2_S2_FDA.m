@@ -6,11 +6,12 @@
 % LJW
 % 2018.3.11
 
-band_name  = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband'...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+% band_name  = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband'...
+%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
 % band_name  = {'broadband','broadband_hilbert',...
 %     'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
 
+band_name = {'delta','alpha','theta'};
 % listener_valid = [1:2 4:9 11:16 18:20];
 listener_valid = 1:20;
 listener_num = length(listener_valid);
@@ -94,7 +95,7 @@ for band_select = 1 : length(band_name)
                 %% load r value data
                 data_name = strcat('mTRF_speakerEEG_listenerEEG_result-',chn_area_labels{chn_area_select},'-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
                 
-                data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Speaker-listenerEEG\raw r value\',...
+                data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Speaker-listenerEEG\0-original r value\raw r value with trans\',...
                     band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
                 
                 load(strcat(data_path,data_name));

@@ -11,7 +11,7 @@
 % band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
 %     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
 
-band_name = {'delta','theta','alpha','broadband'};
+band_name = {'delta','theta','alpha'};
 
 listener_num = 20;
 story_num = 28;
@@ -73,7 +73,7 @@ for band_select = 1 : length(band_name)
             
             data_name = strcat('mTRF_Audio_listenerEEG_result-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
             
-            data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Audio-listenerEEG\',...
+            data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Audio-listener\no zscore\0-raw r value\',...
                 band_file_name,'\',file_name,'\');
             %
             %                 data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Surrogate\Speaker ListenerEEG zscore surrogate10\',...

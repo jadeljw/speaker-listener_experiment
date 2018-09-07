@@ -9,10 +9,10 @@ mkdir('Audio ListenerEEG topoplot');
 cd('Audio ListenerEEG topoplot')
 
 
-band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+% band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
+%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
 
-% band_name = {'delta', 'theta'};
+band_name = {'theta'};
 
 % band_name = {'alpha', 'beta', 'delta', 'theta'};
 
@@ -117,7 +117,7 @@ for band_select = 1 : length(band_name)
                         listener_file_name = strcat('listener1',num2str(listener_select));
                     end
                     
-                    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Audio-listener\0-raw r value with trans\',band_file_name,'\',listener_file_name);
+                    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\mfiles\Figure\Audio-listener\old\',band_file_name,'\',listener_file_name);
                     data_name = strcat('mTRF_Audio_listenerEEG_result-timelag',num2str(timelag(y_ind(ind_select))),'ms-',band_file_name,'.mat');
                     load(strcat(data_path,'\',data_name));
                     

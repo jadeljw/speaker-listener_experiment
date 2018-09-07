@@ -11,9 +11,10 @@ load('E:\DataProcessing\speaker-listener_experiment\Behavioral Result\Behavioral
 Behavioral_result_label = fieldnames(Behavioral_result);
 
 %% initial
-band_name =  {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+% band_name =  {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
+%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
 
+ band_name = {'alpha','delta','theta'};
 listener_num = 20;
 story_num = 28;
 r_num = 4;
@@ -51,7 +52,7 @@ for band_select = 1 : length(band_name)
     
     %   data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Speaker-listenerEEG\raw r value\',...
 %                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
-    load(strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-raw r value mat\Audio-listenerEEG\',band_file_name,'\Correlation_mat.mat'));
+    load(strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Audio-listener\zscore\1-correlation mat\',band_file_name,'\Correlation_mat.mat'));
     raw_r_label = fieldnames(Correlation_mat);
 
 

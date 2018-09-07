@@ -6,7 +6,8 @@
 % LJW
 % 2018.3.11
 
-band_name = {'delta','theta','alpha'};
+% band_name = {'delta','theta','alpha'};
+ band_name = {'theta'};
 listener_num = 20;
 
 for band_select = 1 : length(band_name)
@@ -62,12 +63,16 @@ for band_select = 1 : length(band_name)
             %             disp(strcat(timelag(time_point),'ms'));
             
             %% load r value data
-            load(strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\Audio-Listener\',...
-                band_name{band_select},'\',file_name(2:end),'\mTRF_sound_EEG_result+',num2str(timelag(time_point)),'ms 64Hz 2-8Hz sound from wav',file_name,' lambda1024 10-55s.mat'));
+%             load(strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\Audio-Listener\',...
+%                 band_name{band_select},'\',file_name(2:end),'\mTRF_sound_EEG_result+',num2str(timelag(time_point)),'ms 64Hz 2-8Hz sound from wav',file_name,' lambda1024 10-55s.mat'));
+%            
             
+            
+             load(strcat(' E:\DataProcessing\speaker-listener_experiment\mfiles\Figure\Audio-listener\old\',...
+                band_name{band_select},'\',file_name(2:end),'\mTRF_sound_EEG_result+',num2str(timelag(time_point)),'ms 64Hz 2-8Hz sound from wav',file_name,' lambda1024 10-55s.mat'));
             %% combine r value
             % total
-%             r_value_mat = [recon_AttendDecoder_AudioA_corr recon_AttendDecoder_AudioB_corr recon_UnattendDecoder_AudioA_corr recon_UnattendDecoder_AudioB_corr];
+            r_value_mat = [recon_AttendDecoder_AudioA_corr recon_AttendDecoder_AudioB_corr recon_UnattendDecoder_AudioA_corr recon_UnattendDecoder_AudioB_corr];
             
             % attend only
             %              r_value_mat = [recon_AttendDecoder_AudioA_corr recon_AttendDecoder_AudioB_corr];
@@ -76,7 +81,7 @@ for band_select = 1 : length(band_name)
             %             r_value_mat = [recon_UnattendDecoder_AudioA_corr recon_UnattendDecoder_AudioB_corr];
             
             % difference
-                        r_value_mat = [recon_AttendDecoder_AudioA_corr-recon_AttendDecoder_AudioB_corr recon_UnattendDecoder_AudioA_corr-recon_UnattendDecoder_AudioB_corr];
+%                         r_value_mat = [recon_AttendDecoder_AudioA_corr-recon_AttendDecoder_AudioB_corr recon_UnattendDecoder_AudioA_corr-recon_UnattendDecoder_AudioB_corr];
             
             attend_target_mat = attend_target_num'; % 1 -> attend A; 0 -> attend B
             
@@ -93,9 +98,9 @@ for band_select = 1 : length(band_name)
                 imagesc(r_value_mat);colorbar;
                 data_name = strcat(file_name(2:end),'+',num2str(timelag(time_point)),'ms.jpg');
                 title(data_name(1:end-4));
-                xticks(1:2);
-%                 xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
-                 xticklabels({'Attend','Unattend'});
+                xticks(1:4);
+                xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
+%                  xticklabels({'Attend','Unattend'});
                 saveas(gcf,data_name);
                 close
             end

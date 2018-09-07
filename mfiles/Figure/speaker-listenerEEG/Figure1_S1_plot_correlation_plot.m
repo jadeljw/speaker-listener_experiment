@@ -8,7 +8,7 @@
 
 % band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband', 'broadband_hilbert',...
 %     'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
-band_name = {'delta', 'alpha_hilbert'};
+band_name = {'alpha', 'delta', 'theta'};
 
 listener_num = 20;
 story_num = 28;

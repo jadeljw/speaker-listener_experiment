@@ -63,7 +63,7 @@ dataFile_all = {'20171118-YJMQ','20171122-LTX','20171122-RT',...
 
 % band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
 %     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
-band_name = {'alpha_hilbert','delta','theta'};
+band_name = {'alpha','delta','theta'};
 % band_name = {'beta'};
 
 story_num = 28;
@@ -72,11 +72,11 @@ surrogate_num = 1111111111111111;
 
 for surrogate_select = surrogate_num
     %% shuffle order
-%     [Shuffle_speaker,Shuffle_listener]=U_Shuffle_for_surrogate(1:story_num,1:story_num);
+    %     [Shuffle_speaker,Shuffle_listener]=U_Shuffle_for_surrogate(1:story_num,1:story_num);
     
     Shuffle_speaker = 1 : 28;
     Shuffle_listener = 1 : 28;
-%     pause;
+    %     pause;
     
     %% file
     surrogate_file_name = strcat('Speaker ListenerEEG zscore surrogate',num2str(surrogate_select));
@@ -84,8 +84,8 @@ for surrogate_select = surrogate_num
     cd(surrogate_file_name);
     
     
-%     save_name = strcat('Shuffle_order-',datestr(now,30),'.mat');
-%     save(save_name,'Shuffle_speaker','Shuffle_listener');
+    %     save_name = strcat('Shuffle_order-',datestr(now,30),'.mat');
+    %     save(save_name,'Shuffle_speaker','Shuffle_listener');
     %%
     
     for band_select = 1 : length(band_name)
@@ -205,7 +205,7 @@ for surrogate_select = surrogate_num
             %% timelag
             Fs = 64;
             % timelag = -250:500/32:500;
-            timelag = -5000:(1000/Fs):5000;
+            timelag = -500:(1000/Fs):500;
             % timelag = timelag(33:49);
             %         timelag = 0;
             
@@ -242,6 +242,14 @@ for surrogate_select = surrogate_num
                     train_mTRF_unattend_w_total = zeros(length(listener_chn),(end_time-start_time)/(1000/Fs)+1,size(EEGBlock,1));
                     train_mTRF_attend_con_total = zeros(length(listener_chn),1,size(EEGBlock,1)-1);
                     train_mTRF_unattend_con_total = zeros(length(listener_chn),1,size(EEGBlock,1)-1);
+                    
+                    
+                    
+                    train_mTRF_attend_w_trans_total = zeros(length(listener_chn),(end_time-start_time)/(1000/Fs)+1,size(EEGBlock,1));
+                    train_mTRF_unattend_w_trans_total = zeros(length(listener_chn),(end_time-start_time)/(1000/Fs)+1,size(EEGBlock,1));
+                    train_mTRF_attend_con_trans_total = zeros(length(listener_chn),1,size(EEGBlock,1));
+                    train_mTRF_unattend_con_trans_total = zeros(length(listener_chn),1,size(EEGBlock,1));
+                    
                     
                     train_mTRF_attend_w_train_all_story = cell(size(EEGBlock,1),1);
                     train_mTRF_unattend_w_train_all_story = cell(size(EEGBlock,1),1);
@@ -295,6 +303,12 @@ for surrogate_select = surrogate_num
                         [w_train_mTRF_attend,t_train_mTRF_attend,con_train_mTRF_attend] = mTRFtrain(Audio_attend_train',EEG_train,Fs,-1,start_time,end_time,lambda);
                         [w_train_mTRF_unattend,t_train_mTRF_unattend,con_train_mTRF_unattend] = mTRFtrain(Audio_unattend_train',EEG_train,Fs,-1,start_time,end_time,lambda);
                         
+                        % transfrom
+                        [w_train_mTRF_trans_attend,t_train_mTRF_trans_attend,con_train_mTRF_trans_attend] = ...
+                            mTRFtransform(Audio_attend_train',EEG_train,w_train_mTRF_attend,Fs,-1,start_time,end_time,con_train_mTRF_attend);
+                        [w_train_mTRF_trans_unattend,t_train_mTRF_trans_unattend,con_train_mTRF_trans_unattend] = ...
+                            mTRFtransform(Audio_unattend_train',EEG_train,w_train_mTRF_unattend,Fs,-1,start_time,end_time,con_train_mTRF_unattend);
+                        
                         
                         % record all weights into one matrix
                         train_mTRF_attend_w_total(:,:,train_index) = w_train_mTRF_attend;
@@ -302,6 +316,12 @@ for surrogate_select = surrogate_num
                         
                         train_mTRF_unattend_w_total(:,:,train_index) = w_train_mTRF_unattend;
                         train_mTRF_unattend_con_total(:,:,train_index) = con_train_mTRF_unattend;
+                        
+                        train_mTRF_attend_w_trans_total(:,:,train_index) = w_train_mTRF_trans_attend;
+                        train_mTRF_attend_con_trans_total(:,:,train_index) = con_train_mTRF_trans_attend;
+                        
+                        train_mTRF_unattend_w_trans_total(:,:,train_index) = w_train_mTRF_trans_unattend;
+                        train_mTRF_unattend_con_trans_total(:,:,train_index) = con_train_mTRF_trans_unattend;
                     end
                     
                     % test
@@ -363,7 +383,7 @@ for surrogate_select = surrogate_num
                         'p_recon_AttendDecoder_SpeakerA_corr','p_recon_UnattendDecoder_SpeakerA_corr', 'p_recon_AttendDecoder_SpeakerB_corr','p_recon_UnattendDecoder_SpeakerB_corr',...
                         'MSE_recon_AttendDecoder_SpeakerA_corr','MSE_recon_UnattendDecoder_SpeakerA_corr','MSE_recon_AttendDecoder_SpeakerB_corr','MSE_recon_UnattendDecoder_SpeakerB_corr',...
                         'attend_target_num',...
-                        'train_mTRF_attend_w_total','train_mTRF_unattend_w_total');
+                        'train_mTRF_attend_w_total','train_mTRF_unattend_w_total','train_mTRF_attend_w_trans_total','train_mTRF_unattend_w_trans_total');
                     toc;
                 end
                 

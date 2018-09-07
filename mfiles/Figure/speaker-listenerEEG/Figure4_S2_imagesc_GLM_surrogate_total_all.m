@@ -9,9 +9,9 @@ mkdir('GLM 99.9%');
 cd('GLM 99.9%')
 
 
-band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
-
+% band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
+%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+band_name = {'delta','alpha','theta'};
 listener_num = 20;
 story_num = 28;
 % bin_num = 40;

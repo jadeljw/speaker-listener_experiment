@@ -6,8 +6,9 @@
 % LJW
 
 
-band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+% band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
+%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+band_name = {'alpha', 'delta', 'theta'};
 
 listener_num = 20;
 story_num = 28;
@@ -62,7 +63,7 @@ for band_select = 1 : length(band_name)
     
     
     %% load data
-        data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-raw r value mat\Speaker-listenerEEG\',band_file_name);
+        data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Speaker-listenerEEG\0-raw r value mat\',band_file_name);
 %     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Surrogate\0-raw r value\surrogate10\',band_file_name);
     data_name = 'Correlation_mat.mat';
     load(strcat(data_path,'\',data_name));

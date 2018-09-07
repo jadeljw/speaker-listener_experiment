@@ -5,8 +5,8 @@
 % Attend target A ->1
 % Attend target B ->0
 
-band_name = {'delta','theta','alpha'};
-
+% band_name = {'delta','theta','alpha'};
+band_name = {'theta'};
 
 for band_select = 1 : length(band_name)
     band_file_name = strcat(band_name{band_select});
@@ -82,9 +82,9 @@ for band_select = 1 : length(band_name)
         % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\0-LZR-Listener-ICA-filter-reref-64Hz.mat');
         % load('E:\DataProcessing\speaker-listener_experiment\ListenerData\01-CYX-Listener-ICA-filter-reref-64Hz.mat')
         data_name_temp = strcat('data_filtered_',band_name{band_select});
-        load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),data_name_temp);
+%         load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'.mat'),data_name_temp);
         
-        
+        load(strcat('E:\DataProcessing\speaker-listener_experiment\ListenerData\',dataName,'_new.mat'),data_name_temp);
         % combine
         EEGBlock = eval(strcat('data_filtered_',band_file_name,'.trial'));
         EEGBlock = EEGBlock';

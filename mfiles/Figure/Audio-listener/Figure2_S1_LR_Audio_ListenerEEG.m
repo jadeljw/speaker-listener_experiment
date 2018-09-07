@@ -9,8 +9,8 @@
 % band_name  = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband'...
 %     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
 
-% band_name = {'alpha','delta','theta'};
-band_name = {'theta'};
+band_name = {'alpha','delta','theta'};
+% band_name = {'theta'};
 
 listener_num = 20;
 
@@ -107,7 +107,7 @@ for band_select = 1 : length(band_name)
                 imagesc(r_value_mat);colorbar;
                 data_name = strcat(file_name(2:end),'+',num2str(timelag(time_point)),'ms.jpg');
                 title(data_name(1:end-4));
-                xticks(1:2);
+                xticks(1:4);
                 xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
                 %                  xticklabels({'Attend','Unattend'});
                 saveas(gcf,data_name);

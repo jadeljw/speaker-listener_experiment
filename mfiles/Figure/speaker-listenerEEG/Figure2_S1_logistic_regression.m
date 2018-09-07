@@ -9,14 +9,15 @@
 % band_name = {'delta','theta','alpha','broadband'};
 % type = {'diff','total'};
 
-% band_name = {'delta','delta_hilbert'};
-band_name  = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband', 'broadband_hilbert',...
-    'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
+band_name = {'delta','alpha','theta'};
+% band_name  = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband', 'broadband_hilbert',...
+%     'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
 % band_name  = {'broadband','broadband_hilbert',...
 %     'delta', 'delta_hilbert', 'gamma', 'gamma_hilbert', 'theta', 'theta_hilbert'};
 
 type = {'total'};
-listener_valid = [1:2 4:9 11:16 18:20];
+% listener_valid = [1:2 4:9 11:16 18:20];
+listener_valid = [1:20];
 listener_num = length(listener_valid);
 story_num = 28;
 
@@ -68,8 +69,8 @@ for band_select = 1 : length(band_name)
     
     for type_select = 1 : length(type)
         
-        mkdir(type{type_select});
-        cd(type{type_select});
+%         mkdir(type{type_select});
+%         cd(type{type_select});
         
         
         
@@ -136,7 +137,7 @@ for band_select = 1 : length(band_name)
 %                     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Logistic Regression\Speaker ListenerEEG_area zscore\',...
 %                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
                     
-                    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Speaker-listenerEEG\raw r value\',...
+                    data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Speaker-listenerEEG\0-original r value\raw r value with trans\',...
                         band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
                     
                     load(strcat(data_path,data_name));
@@ -167,17 +168,17 @@ for band_select = 1 : length(band_name)
                     R_squared_mat(listener_select,time_point) = glm.Rsquared.Adjusted;
                     weights_attend_mat(listener_select,:) =  squeeze(mean(train_mTRF_attend_w_total,3));
                     weights_unattend_mat(listener_select,:) =  squeeze(mean(train_mTRF_unattend_w_total,3));
-%                     if glm.Rsquared.Adjusted == 1
-%                         %                 plot(r_value_mat,'*','LineWidth',2);
-%                         imagesc(r_value_mat);colorbar;
-%                         data_name = strcat(file_name,'+',num2str(timelag(time_point)),'ms.jpg');
-%                         title(data_name(1:end-4));
-%                         xticks(1:4);
-%                         xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
-% %                         xticklabels({'Attend','Unattend'});
-%                         saveas(gcf,data_name);
-%                         close
-%                     end
+                    if glm.Rsquared.Adjusted == 1
+                        %                 plot(r_value_mat,'*','LineWidth',2);
+                        imagesc(r_value_mat);colorbar;
+                        data_name = strcat(file_name,'+',num2str(timelag(time_point)),'ms.jpg');
+                        title(data_name(1:end-4));
+                        xticks(1:4);
+                        xticklabels({'Attend-A','Attend-B','Unattend-A','Unattend-B'});
+%                         xticklabels({'Attend','Unattend'});
+                        saveas(gcf,data_name);
+                        close
+                    end
                     
                     %
                     
@@ -225,26 +226,26 @@ for band_select = 1 : length(band_name)
             
             %% plot
 %             % imagesc
-%             set(gcf,'outerposition',get(0,'screensize'));
-%             imagesc(R_squared_mat);colorbar;
-%             caxis([-0.1 0.5]);
-%             %     colormap('jet');
-%             xticks(label_select);
-%             xticklabels(timelag(label_select));
-%             
-%             save_name = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-imagesc-',type{type_select},'.jpg');
-%             title(save_name(1:end-4));
-%             saveas(gcf,save_name);
-%             close
-%             %
-%             % plot mean result
-%             set(gcf,'outerposition',get(0,'screensize'));
-%             plot(timelag,mean(R_squared_mat),'LineWidth',2);
-% %             ylim([0 0.15]);
-%             save_name1 = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-mean-',type{type_select},'.jpg');
-%             title(save_name1(1:end-4));
-%             saveas(gcf,save_name1);
-%             close
+            set(gcf,'outerposition',get(0,'screensize'));
+            imagesc(R_squared_mat);colorbar;
+            caxis([-0.1 0.5]);
+            %     colormap('jet');
+            xticks(label_select);
+            xticklabels(timelag(label_select));
+            
+            save_name = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-imagesc-',type{type_select},'.jpg');
+            title(save_name(1:end-4));
+            saveas(gcf,save_name);
+            close
+            %
+            % plot mean result
+            set(gcf,'outerposition',get(0,'screensize'));
+            plot(timelag,mean(R_squared_mat),'LineWidth',2);
+%             ylim([0 0.15]);
+            save_name1 = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-mean-',type{type_select},'.jpg');
+            title(save_name1(1:end-4));
+            saveas(gcf,save_name1);
+            close
 %             %
             % save data
             save_name2 = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-',chn_area_labels{chn_area_select},'-',band_name{band_select},'-',type{type_select},'-',select_area,'.mat');
@@ -296,8 +297,8 @@ for band_select = 1 : length(band_name)
         save_name = strcat('Audio ListenerEEG Logstic Regresssion r^2 Result-total-',band_name{band_select},'-',type{type_select},'-',select_area,'.mat');
         save(save_name,'R_squared_mat_speaker');
         %
-        p = pwd;
-        cd(p(1:end-(length(type{type_select})+1)));
+%         p = pwd;
+%         cd(p(1:end-(length(type{type_select})+1)));
         
     end
     % file

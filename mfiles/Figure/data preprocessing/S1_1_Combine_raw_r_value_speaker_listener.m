@@ -11,7 +11,7 @@
 % band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
 %     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
 
-band_name = {'alpha_hilbert','delta'};
+band_name = {'delta'};
 
 listener_num = 20;
 story_num = 28;
@@ -43,8 +43,8 @@ layout = 'E:\DataProcessing\easycapm1.mat';
 
 %% timelag
 Fs = 64;
-% timelag = -500 : 1000/Fs : 500;
-timelag = -5000 : 1000/Fs : 5000;
+timelag = -500 : 1000/Fs : 500;
+% timelag = -5000 : 1000/Fs : 5000;
 label_select = 1 : round(length(timelag)/8) :length(timelag);
 
 %% initial
@@ -79,7 +79,7 @@ for band_select = 1 : length(band_name)
                 data_name = strcat('mTRF_speakerEEG_listenerEEG_result-',chn_area_labels{chn_area_select},'-timelag',num2str(timelag(time_point)),'ms-',band_file_name,'.mat');
                 
                 
-                data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-original r value\Speaker-listenerEEG\-5s~5s\',...
+                data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Speaker-listenerEEG\0-original r value\raw r value with trans\',...
                     band_file_name,'\',file_name,'\',chn_area_labels{chn_area_select},'\');
 %                 
 %                 data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Surrogate\Speaker ListenerEEG zscore surrogate10\',...

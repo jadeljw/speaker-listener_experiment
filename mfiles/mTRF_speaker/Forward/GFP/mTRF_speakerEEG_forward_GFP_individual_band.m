@@ -2,6 +2,7 @@
 
 band_name = {'delta','theta','alpha','beta','broadband','1_8Hz','narrow_theta'};
 % band_name = {'alpha'};
+
 for i = 1 : 20
     
     %% listener name

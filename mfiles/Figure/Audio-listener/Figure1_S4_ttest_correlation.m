@@ -6,15 +6,15 @@
 % LJW
 
 
-band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
-    'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
-
+% band_name = {'alpha', 'alpha_hilbert', 'beta', 'beta_hilbert', 'broadband',...
+%     'delta', 'delta_hilbert', 'theta', 'theta_hilbert'};
+band_name = {'alpha',  'delta',  'theta'};
 listener_num = 20;
 story_num = 28;
 
 %%
-mkdir('r value ttest');
-cd('r value ttest')
+mkdir('ttest');
+cd('ttest')
 
 
 %% new order
@@ -62,7 +62,7 @@ for band_select = 1 : length(band_name)
     
     
     %% load data
-        data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\0-raw r value mat\Audio-listenerEEG\',band_file_name);
+        data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Figure\Audio-listener\zscore\1-correlation mat\',band_file_name);
 %     data_path = strcat('E:\DataProcessing\speaker-listener_experiment\Surrogate\0-raw r value\surrogate10\',band_file_name);
     data_name = 'Correlation_mat.mat';
     load(strcat(data_path,'\',data_name));
@@ -105,7 +105,7 @@ for band_select = 1 : length(band_name)
         set(gcf,'outerposition',get(0,'screensize'));
         plot(timelag,-log10(ttest_result.P),'k','LineWidth',2);
         hold on;plot([timelag(1) timelag(end)],[1.3 1.3],'b--')
-        ylim([0 5.5]);
+        ylim([0 10]);
 %         colormap('jet');
 %         xticks(label_select);
 %         xticklabels(timelag(label_select));
